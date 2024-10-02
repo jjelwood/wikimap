@@ -1,5 +1,5 @@
 import mysql.connector
-import wikigraph_sql_export
+import names_export
 
 hard_reset = True
 
@@ -32,7 +32,7 @@ try:
         `pagerank` decimal(10,0) DEFAULT NULL,
         `reputability_score` decimal(10,0) DEFAULT NULL,
         PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    );
     """)
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS `comments` (
@@ -43,7 +43,7 @@ try:
         `date` datetime DEFAULT NULL,
         `username` varchar(255) DEFAULT NULL,
         PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    );
     """)
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS `links` (
@@ -56,7 +56,7 @@ try:
     );
     """)
 
-    wikigraph_sql_export.export_wikigraph(cursor, 'C:\\Users\\jj\\University\\uc3m\\wikimap\\sources\\wikilink_graph.2018-03-01.csv')
+    names_export.export_names(cursor, 'C:\\Users\\jj\Downloads\\archive\\AgeDataset-V1.csv')
 
     connection.commit()
 finally:
