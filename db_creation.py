@@ -1,5 +1,6 @@
 import mysql.connector
 import names_export
+import get_places_and_summary
 
 hard_reset = True
 
@@ -22,7 +23,7 @@ try:
     cursor.execute("""CREATE TABLE IF NOT EXISTS `articles` (
         `id` int NOT NULL,
         `name` varchar(255) DEFAULT NULL,
-        `coordinates` varchar(45) DEFAULT NULL,
+        `place_id` int DEFAULT NULL,
         `url` varchar(255) DEFAULT NULL,
         `length` int DEFAULT NULL,
         `citations` int DEFAULT NULL,
@@ -31,6 +32,15 @@ try:
         `created` datetime DEFAULT NULL,
         `pagerank` decimal(10,0) DEFAULT NULL,
         `reputability_score` decimal(10,0) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+    );
+    """)
+
+    cursor.execute("""CREATE TABLE IF NOT EXISTS `places` (
+        `id` int NOT NULL,
+        `name` varchar(255) DEFAULT NULL,
+        `latitude` decimal(10,8) DEFAULT NULL,
+        `longitude` decimal(11,8) DEFAULT NULL,
         PRIMARY KEY (`id`)
     );
     """)
@@ -57,6 +67,7 @@ try:
     """)
 
     names_export.export_names(cursor, 'C:\\Users\\jj\Downloads\\archive\\AgeDataset-V1.csv')
+    get_places_and_summary.add_places(cursor)
 
     connection.commit()
 finally:
