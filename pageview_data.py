@@ -4,7 +4,7 @@ import json
 
 def get_pageviews(article, start_date, end_date):
     # Use 'monthly' instead of 'daily' in the URL to get monthly pageviews
-    url = f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/{article}/monthly/{start_date}/{end_date}"
+    url = f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/{article}/daily/{start_date}/{end_date}"
 
     headers = {
         'User-Agent': 'PageViewRetriever/1.0 (josejaviaa@gmail.com)'  # Replace with your email
@@ -39,7 +39,7 @@ articles = ["Cat", "Dog"]
 # Specify the date range (format: YYYYMM)
 # Get the past 6 months. For example, from 2023-04 to 2023-09
 start_date = "20240401"  # Start date (YYYYMM01, first day of the month)
-end_date = "20231030"  # End date (YYYYMMDD, last day of the month)
+end_date = "20241030"  # End date (YYYYMMDD, last day of the month)
 
 # Fetch data and calculate average for each article
 for article in articles:

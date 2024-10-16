@@ -1,5 +1,5 @@
 import requests
-import mysql.connector
+import sql
 
 def get_api_key():
     with open('key.txt', 'r') as file:
@@ -39,67 +39,35 @@ def get_lati_longi(address):
             return lat, lng
 
         else:
-
+            print(response)
             print(f"Error: {data['error_message']}")
 
             return 0, 0
 
     else:
 
-        print("Failed to make the request.")
+        print("Failed to make the request." + str(response))
 
         return 0, 0
 
-# address = 'Alcantarilla, Murcia, Spain'
-#
-# lati, longi = get_lati_longi(address)
-#
-# print(f"Latitude: {lati}")
-#
-# print(f"Longitude: {longi}")
-
-#
-# Establish the connection
-conn = mysql.connector.connect(
-    host="127.0.0.1",  # Replace with your host
-    user="root",  # Replace with your MySQL username
-    password=get_sql_password(),  # Replace with your MySQL password
-    database="wikimap_data"  # Replace with your database name
-)
-
-# Create a cursor object
-cursor = conn.cursor()
-
-# Step 1: Select the value from the identifier column (which is the same as the column to read)
-column_to_read = "name"  # Replace with the name of the column you are reading and using as identifier
-table_name = "places"  # Replace with your table name
-cursor.execute(f"SELECT {column_to_read} FROM {table_name}")
-
-# Fetch all rows
-rows = cursor.fetchall()
-
-# Step 2: Loop through each row and update another column using the value read
-column_to_update = "coordinates"  # Column where the new value will be inserted
-
+sql.cursor.execute(f"SELECT name FROM places WHERE latitude IS NULL")
+rows = sql.cursor.fetchall()
 
 for row in rows:
-    value_to_read = row[0]  # Get the value from the column (also the identifier)
+    place_name = row[0]
+    try:
+        coordinates = get_lati_longi(place_name)
+    except Exception:
+        print(f"error with {place_name}")
+        continue
 
-    # Perform some logic with the value_to_read
-    new_value = str(get_lati_longi(value_to_read))
+    query = f"UPDATE places SET latitude = %s, longitude = %s WHERE name = %s"
 
-    # Step 3: Update another column in the same row using the value_to_read as the identifier
-    query = f"UPDATE {table_name} SET {column_to_update} = %s WHERE {column_to_read} = %s"
+    sql.cursor.execute(query, (coordinates[0], coordinates[1], place_name))
 
-    # Execute the update query with the new value and the same value used as the identifier
-    cursor.execute(query, (new_value, value_to_read))
 
-# Commit the transaction to save the changes
-conn.commit()
-
-# Print how many rows were updated
-print(f"{cursor.rowcount} row(s) updated.")
+sql.conn.commit()
 
 # Close the connection
-cursor.close()
-conn.close()
+sql.cursor.close()
+sql.conn.close()

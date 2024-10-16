@@ -35,7 +35,7 @@ CREATE TABLE `articles` (
   `edits` int DEFAULT NULL,
   `editors` int DEFAULT NULL,
   `created` datetime DEFAULT NULL,
-  `pagerank` decimal(10,0) DEFAULT NULL,
+  `pageviews` int DEFAULT NULL,
   `reputability_score` decimal(10,0) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
