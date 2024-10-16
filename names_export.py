@@ -12,7 +12,7 @@ def export_names(cursor, path):
         reader = csv.DictReader(f, delimiter=',')
         count = 0
         for row in reader:
-            if count >= 100:
+            if count >= 1000:
                 break
             id = int(row['Id'][1:])
             name = row['Name']
