@@ -1,6 +1,7 @@
 import mysql.connector
 import names_export
 import wikidata_query
+import get_links
 
 hard_reset = False
 
@@ -13,6 +14,7 @@ connection = mysql.connector.connect(
 cursor = connection.cursor(buffered=True)
 
 try:
+
     if hard_reset and input("Are you sure you want to delete the database? (y/n) ") == 'y':
         cursor.execute("DROP DATABASE IF EXISTS wikimap")
 
@@ -67,8 +69,10 @@ try:
     );
     """)
 
-    names_export.export_names(cursor, 'C:\\Users\\jj\Downloads\\archive\\AgeDataset-V1.csv')
-    wikidata_query.add_places(cursor)
+    # get_links.get_links(cursor)
+    # names_export.export_names(cursor, 'C:\\Users\\jj\Downloads\\archive\\AgeDataset-V1.csv')
+    # wikidata_query.add_places(cursor)
+    wikidata_query.populate_places(cursor)
 finally:
     connection.commit()
     cursor.close()
