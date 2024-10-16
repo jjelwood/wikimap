@@ -9,7 +9,7 @@ def add_places(cursor):
     for row in rows:
         if row[2] is not None and row[3] is not None:
             continue
-        make_query(cursor, row)
+        get_places_and_summaries(cursor, row)
 
 def article_query(article_id):
     url = f'https://www.wikidata.org/wiki/Special:EntityData/Q{article_id}.json'
