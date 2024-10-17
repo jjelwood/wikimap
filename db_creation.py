@@ -65,7 +65,7 @@ try:
     );
     """)
 
-    # names_export.export_names(sql.cursor, 'C:\\Users\\jj\Downloads\\archive\\AgeDataset-V1.csv')
+    # names_export.export_names(sql.cursor, config['names_path'])
     # wikidata_query.add_places(sql.cursor)
     # wikidata_query.populate_places(sql.cursor)
     # wikipedia_query.get_links(sql.cursor)
