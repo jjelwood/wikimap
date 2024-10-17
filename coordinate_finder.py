@@ -1,23 +1,15 @@
 import requests
+import json
 
-def get_api_key():
-    with open('key.txt', 'r') as file:
-        key = file.read()
-        return key
-
-def get_sql_password():
-    with open('sql_password.txt', 'r') as file:
-        password = file.read()
-        return password
+config = json.load(open("config.json"))
 
 def get_lati_longi(address):
     url = 'https://maps.googleapis.com/maps/api/geocode/json'
-    api_key = get_api_key()
     params = {
 
         "address": address,
 
-        "key": api_key
+        "key": config["google_api_key"]
 
     }
 
