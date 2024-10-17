@@ -1,10 +1,11 @@
-import mysql.connector
 import names_export
 import wikidata_query
 import wikipedia_query
 import get_citations
 import json
 import sql
+import coordinate_finder
+import pageview_data
 
 hard_reset = False
 
@@ -71,6 +72,8 @@ try:
     # wikipedia_query.get_links(sql.cursor)
     # wikipedia_query.get_lengths(sql.cursor)
     get_citations.get_citations(sql.cursor)
+    coordinate_finder.add_coordinates(sql.cursor)
+    pageview_data.add_pageviews(sql.cursor)
 
 finally:
     sql.conn.commit()
