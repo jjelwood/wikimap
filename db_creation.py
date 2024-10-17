@@ -1,14 +1,19 @@
 import mysql.connector
 import names_export
 import wikidata_query
-import get_links
+import wikipedia_query
+import get_citations
+import json
+from sql import cursor
 
 hard_reset = False
 
+config = json.load(open('config.json'))
+
 connection = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="password"
+  host=config['sqlhost'],
+  user=config['sqluser'],
+  password=config['sqlpassword']
 )
 
 cursor = connection.cursor(buffered=True)
@@ -16,11 +21,11 @@ cursor = connection.cursor(buffered=True)
 try:
 
     if hard_reset and input("Are you sure you want to delete the database? (y/n) ") == 'y':
-        cursor.execute("DROP DATABASE IF EXISTS wikimap")
+        cursor.execute(f"DROP DATABASE IF EXISTS {config['sqldb']}")
 
-    cursor.execute("CREATE DATABASE IF NOT EXISTS wikimap")
+    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {config['sqldb']}")
 
-    cursor.execute("USE wikimap")
+    cursor.execute(f"USE {config['sqldb']}")
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS `articles` (
         `id` int NOT NULL,
@@ -69,10 +74,13 @@ try:
     );
     """)
 
-    # get_links.get_links(cursor)
     # names_export.export_names(cursor, 'C:\\Users\\jj\Downloads\\archive\\AgeDataset-V1.csv')
     # wikidata_query.add_places(cursor)
-    wikidata_query.populate_places(cursor)
+    # wikidata_query.populate_places(cursor)
+    # wikipedia_query.get_links(cursor)
+    # wikipedia_query.get_lengths(cursor)
+    get_citations.get_citations(cursor)
+
 finally:
     connection.commit()
     cursor.close()

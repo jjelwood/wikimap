@@ -1,0 +1,9 @@
+{
+    "sqlhost": "localhost",
+    "sqluser": "root",
+    "sqlpassword": "password",
+    "sqldb": "wikidata",
+    "sqlport": 3306,
+    "names_source": "path/to/names.csv",
+    "google_api_key": "your_api_key"
+}

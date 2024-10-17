@@ -10,9 +10,8 @@ __pycache__/
 # IDE configuration (if using PyCharm/IntelliJ)
 .idea/
 
-# Ignore JSON files (optional, if they are environment-specific)
-*.json
-
 key.txt
 
 sql_password.txt
+
+config.json
