@@ -7,7 +7,7 @@ import sql
 import coordinate_finder
 import pageview_data
 
-hard_reset = False
+hard_reset = True
 
 config = json.load(open('config.json'))
 
@@ -45,16 +45,16 @@ try:
     );
     """)
 
-    # sql.cursor.execute("""CREATE TABLE IF NOT EXISTS `comments` (
-    #     `id` int AUTO_INCREMENT,
-    #     `article_id` int DEFAULT NULL,
-    #     `article_name` varchar(255) DEFAULT NULL,
-    #     `text` varchar(255) DEFAULT NULL,
-    #     `date` datetime DEFAULT NULL,
-    #     `username` varchar(255) DEFAULT NULL,
-    #     PRIMARY KEY (`id`)
-    # );
-    # """)
+    sql.cursor.execute("""CREATE TABLE IF NOT EXISTS `comments` (
+        `id` int AUTO_INCREMENT,
+        `article_id` int DEFAULT NULL,
+        `article_name` varchar(255) DEFAULT NULL,
+        `text` varchar(255) DEFAULT NULL,
+        `date` datetime DEFAULT NULL,
+        `username` varchar(255) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+    );
+    """)
 
     sql.cursor.execute("""CREATE TABLE IF NOT EXISTS `links` (
         `id` int NOT NULL AUTO_INCREMENT,
@@ -66,11 +66,11 @@ try:
     );
     """)
 
-    # names_export.export_names(sql.cursor, config['names_path'])
-    # wikidata_query.add_places(sql.cursor)
-    # wikidata_query.populate_places(sql.cursor)
-    # wikipedia_query.get_links(sql.cursor)
-    # wikipedia_query.get_lengths(sql.cursor)
+    names_export.export_names(sql.cursor, config['names_path'])
+    wikidata_query.add_places(sql.cursor)
+    wikidata_query.populate_places(sql.cursor)
+    wikipedia_query.get_links(sql.cursor)
+    wikipedia_query.get_lengths(sql.cursor)
     get_citations.get_citations(sql.cursor)
     coordinate_finder.add_coordinates(sql.cursor)
     pageview_data.add_pageviews(sql.cursor)
