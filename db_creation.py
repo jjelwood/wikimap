@@ -4,30 +4,21 @@ import wikidata_query
 import wikipedia_query
 import get_citations
 import json
-from sql import cursor
+import sql
 
 hard_reset = False
 
 config = json.load(open('config.json'))
 
-connection = mysql.connector.connect(
-  host=config['sqlhost'],
-  user=config['sqluser'],
-  password=config['sqlpassword']
-)
-
-cursor = connection.cursor(buffered=True)
-
 try:
-
     if hard_reset and input("Are you sure you want to delete the database? (y/n) ") == 'y':
-        cursor.execute(f"DROP DATABASE IF EXISTS {config['sqldb']}")
+        sql.cursor.execute(f"DROP DATABASE IF EXISTS {config['sqldb']}")
 
-    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {config['sqldb']}")
+    sql.cursor.execute(f"CREATE DATABASE IF NOT EXISTS {config['sqldb']}")
 
-    cursor.execute(f"USE {config['sqldb']}")
+    sql.cursor.execute(f"USE {config['sqldb']}")
 
-    cursor.execute("""CREATE TABLE IF NOT EXISTS `articles` (
+    sql.cursor.execute("""CREATE TABLE IF NOT EXISTS `articles` (
         `id` int NOT NULL,
         `name` varchar(255) DEFAULT NULL,
         `place_id` int DEFAULT NULL,
@@ -44,7 +35,7 @@ try:
     );
     """)
 
-    cursor.execute("""CREATE TABLE IF NOT EXISTS `places` (
+    sql.cursor.execute("""CREATE TABLE IF NOT EXISTS `places` (
         `id` int NOT NULL,
         `name` varchar(255) DEFAULT NULL,
         `latitude` decimal(10,8) DEFAULT NULL,
@@ -53,7 +44,7 @@ try:
     );
     """)
 
-    cursor.execute("""CREATE TABLE IF NOT EXISTS `comments` (
+    sql.cursor.execute("""CREATE TABLE IF NOT EXISTS `comments` (
         `id` int AUTO_INCREMENT,
         `article_id` int DEFAULT NULL,
         `article_name` varchar(255) DEFAULT NULL,
@@ -64,7 +55,7 @@ try:
     );
     """)
 
-    cursor.execute("""CREATE TABLE IF NOT EXISTS `links` (
+    sql.cursor.execute("""CREATE TABLE IF NOT EXISTS `links` (
         `id` int NOT NULL AUTO_INCREMENT,
         `from_id` int DEFAULT NULL,
         `to_id` int DEFAULT NULL,
@@ -74,14 +65,14 @@ try:
     );
     """)
 
-    # names_export.export_names(cursor, 'C:\\Users\\jj\Downloads\\archive\\AgeDataset-V1.csv')
-    # wikidata_query.add_places(cursor)
-    # wikidata_query.populate_places(cursor)
-    # wikipedia_query.get_links(cursor)
-    # wikipedia_query.get_lengths(cursor)
-    get_citations.get_citations(cursor)
+    # names_export.export_names(sql.cursor, 'C:\\Users\\jj\Downloads\\archive\\AgeDataset-V1.csv')
+    # wikidata_query.add_places(sql.cursor)
+    # wikidata_query.populate_places(sql.cursor)
+    # wikipedia_query.get_links(sql.cursor)
+    # wikipedia_query.get_lengths(sql.cursor)
+    get_citations.get_citations(sql.cursor)
 
 finally:
-    connection.commit()
-    cursor.close()
-    connection.close()
+    sql.conn.commit()
+    sql.cursor.close()
+    sql.conn.close()

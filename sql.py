@@ -8,7 +8,7 @@ conn = mysql.connector.connect(
     user=config['sqluser'],
     password=config['sqlpassword'],
     host=config['sqlhost'],
-    database=config['database']
+    database=config['sqldb']
 )
 
 cursor = conn.cursor(buffered=True)
