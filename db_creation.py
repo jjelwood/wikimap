@@ -30,7 +30,7 @@ try:
         `edits` int DEFAULT NULL,
         `editors` int DEFAULT NULL,
         `created` datetime DEFAULT NULL,
-        `pagerank` decimal(10,0) DEFAULT NULL,
+        `pageviews` int DEFAULT NULL,
         `reputability_score` decimal(10,0) DEFAULT NULL,
         PRIMARY KEY (`id`)
     );
@@ -45,16 +45,16 @@ try:
     );
     """)
 
-    sql.cursor.execute("""CREATE TABLE IF NOT EXISTS `comments` (
-        `id` int AUTO_INCREMENT,
-        `article_id` int DEFAULT NULL,
-        `article_name` varchar(255) DEFAULT NULL,
-        `text` varchar(255) DEFAULT NULL,
-        `date` datetime DEFAULT NULL,
-        `username` varchar(255) DEFAULT NULL,
-        PRIMARY KEY (`id`)
-    );
-    """)
+    # sql.cursor.execute("""CREATE TABLE IF NOT EXISTS `comments` (
+    #     `id` int AUTO_INCREMENT,
+    #     `article_id` int DEFAULT NULL,
+    #     `article_name` varchar(255) DEFAULT NULL,
+    #     `text` varchar(255) DEFAULT NULL,
+    #     `date` datetime DEFAULT NULL,
+    #     `username` varchar(255) DEFAULT NULL,
+    #     PRIMARY KEY (`id`)
+    # );
+    # """)
 
     sql.cursor.execute("""CREATE TABLE IF NOT EXISTS `links` (
         `id` int NOT NULL AUTO_INCREMENT,
