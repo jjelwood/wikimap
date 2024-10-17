@@ -7,7 +7,7 @@ import sql
 import coordinate_finder
 import pageview_data
 
-hard_reset = False
+hard_reset = True
 
 config = json.load(open('config.json'))
 
@@ -30,7 +30,7 @@ try:
         `edits` int DEFAULT NULL,
         `editors` int DEFAULT NULL,
         `created` datetime DEFAULT NULL,
-        `pagerank` decimal(10,0) DEFAULT NULL,
+        `pageviews` int DEFAULT NULL,
         `reputability_score` decimal(10,0) DEFAULT NULL,
         PRIMARY KEY (`id`)
     );
@@ -66,11 +66,11 @@ try:
     );
     """)
 
-    # names_export.export_names(sql.cursor, 'C:\\Users\\jj\Downloads\\archive\\AgeDataset-V1.csv')
-    # wikidata_query.add_places(sql.cursor)
-    # wikidata_query.populate_places(sql.cursor)
-    # wikipedia_query.get_links(sql.cursor)
-    # wikipedia_query.get_lengths(sql.cursor)
+    names_export.export_names(sql.cursor, config['names_path'])
+    wikidata_query.add_places(sql.cursor)
+    wikidata_query.populate_places(sql.cursor)
+    wikipedia_query.get_links(sql.cursor)
+    wikipedia_query.get_lengths(sql.cursor)
     get_citations.get_citations(sql.cursor)
     coordinate_finder.add_coordinates(sql.cursor)
     pageview_data.add_pageviews(sql.cursor)
