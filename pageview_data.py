@@ -1,6 +1,5 @@
 import requests
 import time
-import sql
 import traceback
 
 def get_pageviews(article, start_date, end_date):
@@ -31,42 +30,31 @@ def calculate_average_pageviews(pageviews_data):
     else:
         return 0
 
+def add_pageviews(cursor):
+    # Articles you want to track
+    cursor.execute(f"SELECT name FROM articles WHERE pageviews IS NULL")
+    rows = cursor.fetchall()
 
-# Articles you want to track
-sql.cursor.execute(f"SELECT name FROM articles WHERE pageviews IS NULL")
-rows = sql.cursor.fetchall()
+    # Specify the date range (format: YYYYMM)
+    # Get the past 6 months. For example, from 2023-04 to 2023-09
+    start_date = "20240401"  # Start date (YYYYMM01, first day of the month)
+    end_date = "20240930"  # End date (YYYYMMDD, last day of the month)
 
-# Specify the date range (format: YYYYMM)
-# Get the past 6 months. For example, from 2023-04 to 2023-09
-start_date = "20240401"  # Start date (YYYYMM01, first day of the month)
-end_date = "20240930"  # End date (YYYYMMDD, last day of the month)
-
-counter = 0
-# Fetch data and calculate average for each article
-for row in rows:
-    time.sleep(1)
-    article = row[0]
-    try:
-        status, pageviews_data = get_pageviews(article, start_date, end_date)
-    except Exception as e:
-        traceback.print_exc()
-        print(f"Error with {article}!! Exception: {e}")
-        time.sleep(3)
-        continue
-    if status == 0:
-        average_views = calculate_average_pageviews(pageviews_data)
-        query = f"UPDATE articles SET pageviews = %s WHERE name = %s"
-        sql.cursor.execute(query, (average_views, article))
-        print(f"Average monthly views for {article} (last 6 months): {average_views}")
-        if counter == 20:
-            counter = 0
-            sql.conn.commit()
-    else:
-        print(f"Error fetching data for {article}, code = {status}, message: {pageviews_data}")
-    counter += 1
-
-sql.conn.commit()
-
-# Close the connection
-sql.cursor.close()
-sql.conn.close()
+    # Fetch data and calculate average for each article
+    for row in rows:
+        time.sleep(1)
+        article = row[0]
+        try:
+            status, pageviews_data = get_pageviews(article, start_date, end_date)
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Error with {article}!! Exception: {e}")
+            time.sleep(3)
+            continue
+        if status == 0:
+            average_views = calculate_average_pageviews(pageviews_data)
+            query = f"UPDATE articles SET pageviews = %s WHERE name = %s"
+            cursor.execute(query, (average_views, article))
+            print(f"Average monthly views for {article} (last 6 months): {average_views}")
+        else:
+            print(f"Error fetching data for {article}, code = {status}, message: {pageviews_data}")

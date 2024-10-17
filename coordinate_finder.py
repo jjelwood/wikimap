@@ -1,5 +1,4 @@
 import requests
-import sql
 
 def get_api_key():
     with open('key.txt', 'r') as file:
@@ -50,24 +49,18 @@ def get_lati_longi(address):
 
         return 0, 0
 
-sql.cursor.execute(f"SELECT name FROM places WHERE latitude IS NULL")
-rows = sql.cursor.fetchall()
+def add_coordinates(cursor):
+    cursor.execute(f"SELECT name FROM places WHERE latitude IS NULL")
+    rows = cursor.fetchall()
 
-for row in rows:
-    place_name = row[0]
-    try:
-        coordinates = get_lati_longi(place_name)
-    except Exception:
-        print(f"error with {place_name}")
-        continue
+    for row in rows:
+        place_name = row[0]
+        try:
+            coordinates = get_lati_longi(place_name)
+        except Exception:
+            print(f"error with {place_name}")
+            continue
 
-    query = f"UPDATE places SET latitude = %s, longitude = %s WHERE name = %s"
+        query = f"UPDATE places SET latitude = %s, longitude = %s WHERE name = %s"
 
-    sql.cursor.execute(query, (coordinates[0], coordinates[1], place_name))
-
-
-sql.conn.commit()
-
-# Close the connection
-sql.cursor.close()
-sql.conn.close()
+        cursor.execute(query, (coordinates[0], coordinates[1], place_name))
