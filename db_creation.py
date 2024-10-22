@@ -6,6 +6,7 @@ import json
 import sql
 import coordinate_finder
 import pageview_data
+import get_reddit_data
 
 hard_reset = True
 
@@ -45,13 +46,14 @@ try:
     );
     """)
 
-    sql.cursor.execute("""CREATE TABLE IF NOT EXISTS `comments` (
+    sql.cursor.execute("""CREATE TABLE IF NOT EXISTS `posts` (
         `id` int AUTO_INCREMENT,
-        `article_id` int DEFAULT NULL,
-        `article_name` varchar(255) DEFAULT NULL,
-        `text` varchar(255) DEFAULT NULL,
-        `date` datetime DEFAULT NULL,
-        `username` varchar(255) DEFAULT NULL,
+        `name` varchar(255),
+        `submission_id` varchar(255) DEFAULT NULL,
+        `submission_title` varchar(1000) DEFAULT NULL,
+        `submission_url` varchar(1000) DEFAULT NULL,          
+        `submission_score` int DEFAULT NULL,
+        `submission_author` varchar(255) DEFAULT NULL,
         PRIMARY KEY (`id`)
     );
     """)
@@ -74,6 +76,7 @@ try:
     get_citations.get_citations(sql.cursor)
     coordinate_finder.add_coordinates(sql.cursor)
     pageview_data.add_pageviews(sql.cursor)
+    get_reddit_data.get_reddit_data(sql.cursor)
 
 finally:
     sql.conn.commit()
