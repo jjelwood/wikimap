@@ -15,10 +15,10 @@ app.layout = html.Div([
 
 # Callbacks
 
-@app.callback(
-    Output("graph", "figure"),
-    Input("map", "selectedData")
-)
+# @app.callback(
+#     Output("graph", "figure"),
+#     Input("map", "selectedData")
+# )
 
 if __name__ == "__main__":
     app.run(debug=True)
