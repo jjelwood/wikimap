@@ -36,3 +36,6 @@ content = html.Div([
 options = html.Div([
     html.P("This is an option in the map view")
 ])
+second_content = html.Div([
+    html.P("This is the second content in the map view")
+])

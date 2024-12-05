@@ -8,6 +8,9 @@ import graph_view
 app = Dash(__name__)
 
 app.layout = html.Div([
+    # Title
+    html.H1("Wikimap"),
+
     # Menu bar
     html.Div([
         html.Button("Home", id="home-button", n_clicks=0, className="menu-button"),
@@ -35,14 +38,15 @@ def display_page(home_clicks, map_clicks, graphs_click):
     if button_id == 'map-button':
         options = map_view.options
         content = map_view.content
-        second_content = graph_view.content
+        second_content = map_view.second_content
     elif button_id == 'graphs-button':
         options = graph_view.options
         content = graph_view.content
-        second_content = map_view.content
+        second_content = graph_view.second_content
     else:
         options = None
-        content = html.H1("Welcome to the Wikimap!")
+        content = html.H1("This is a test view")
+        second_content = html.Div("This is second content goes")
         
     return html.Div([
         # Options Menu
@@ -54,13 +58,14 @@ def display_page(home_clicks, map_clicks, graphs_click):
             html.Div([
                 html.H2("Options"),
                 options
-            ]),
-        ], id="options"),
+            ], id="options"),
+        ], id="options-menu"),
 
         # Section Content
         html.Div([
-            content
-        ]),
+            content,
+            second_content,
+        ], id="content-split"),
     ], id="section-content")
 
 @app.callback(

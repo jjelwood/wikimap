@@ -23,3 +23,6 @@ content = html.Div([
 options = html.Div([
     html.P("This is an option in the graph view")
 ])
+second_content = html.Div([
+    html.P("This is the second content in the graph view")
+])
