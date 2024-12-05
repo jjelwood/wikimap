@@ -14,11 +14,11 @@ fig = px.scatter_map(
     zoom=1,
     size="pageviews",
 )
-# fig.update_traces(
-#     cluster=dict(
-#         enabled=True,
-#     )
-# )
+fig.update_traces(
+    cluster=dict(
+        enabled=True,
+    )
+)
 fig.update_layout(
     mapbox=dict(
         center=dict(lat=data["lat"].mean(), lon=data["lon"].mean()),
@@ -30,4 +30,9 @@ fig.update_layout(
     uirevision='constant',
 )
 
-map = html.Div([dcc.Graph(figure=fig)])
+content = html.Div([
+    dcc.Graph(figure=fig)
+])
+options = html.Div([
+    html.P("This is an option in the map view")
+])
