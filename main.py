@@ -13,5 +13,12 @@ app.layout = html.Div([
     graph_view.graph,
 ])
 
+# Callbacks
+
+@app.callback(
+    Output("graph", "figure"),
+    Input("map", "selectedData")
+)
+
 if __name__ == "__main__":
     app.run(debug=True)
