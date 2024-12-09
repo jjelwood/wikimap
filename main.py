@@ -1,4 +1,4 @@
-from dash import Dash, html, dcc, callback, Output, Input, callback_context
+from dash import Dash, html, dcc, callback, Output, Input, State, callback_context
 import plotly.express as px
 import pandas as pd
 import sql
@@ -30,11 +30,9 @@ def generate_content(button_id):
             ], id="options"),
         ], id="options-menu"),
 
-        # Section Content
-        html.Div([
-            content,
-            second_content,
-        ], id="content-split"),
+        html.Div([second_content], id="secondary-content"), 
+
+        content,
     ], id="section-content")
 
 # Callbacks to update the content based on the URL
@@ -45,7 +43,7 @@ def generate_content(button_id):
 )
 def display_page(map_clicks, graphs_click):
     if not callback_context.triggered:
-        button_id = 'home-button'
+        button_id = 'map-button'
     else:
         button_id = callback_context.triggered[0]['prop_id'].split('.')[0]
     
@@ -80,6 +78,7 @@ app.layout = html.Div([
     # Main content
     html.Div(generate_content('map-button'), id='page-content'),
 ], id='root')
+
 
 if __name__ == "__main__":
     app.run(debug=True)

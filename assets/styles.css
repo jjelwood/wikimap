@@ -127,21 +127,6 @@ html, body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-/* Split content layout */
-#split-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-#split-content > div {
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-
 /* Buttons */
 .menu-button, #hamburger {
     background-color: #007bff;
@@ -157,6 +142,26 @@ html, body {
 
 .menu-button:hover, #hamburger:hover {
     background-color: #0056b3;
+}
+
+#secondary-content {
+    position: absolute; /* Allows free movement on the page */
+    bottom: 10px;
+    left: 10px;
+    background-color: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    width: 220px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 1;
+    cursor: move; /* Indicates it's draggable */
+}
+
+#secondary-content * {
+    user-select: none; /* Disable text highlighting */
 }
 
 /* Media queries for responsive design */
