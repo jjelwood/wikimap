@@ -7,46 +7,15 @@ import graph_view
 
 app = Dash(__name__)
 
-app.layout = html.Div([
-    # Title
-    html.H1("Wikimap"),
-
-    # Menu bar
-    html.Div([
-        html.Button("Home", id="home-button", n_clicks=0, className="menu-button"),
-        html.Button("Map", id="map-button", n_clicks=0, className="menu-button"),
-        html.Button("Graphs", id="graphs-button", n_clicks=0, className="menu-button"),
-    ], id="menu"),
-
-    # Main content
-    html.Div(id='page-content'),
-], id='root')
-
-# Callbacks to update the content based on the URL
-@app.callback(
-    Output('page-content', 'children'),
-    [Input('home-button', 'n_clicks'),
-     Input('map-button', 'n_clicks'),
-     Input('graphs-button', 'n_clicks')]
-)
-def display_page(home_clicks, map_clicks, graphs_click):
-    if not callback_context.triggered:
-        button_id = 'home-button'
-    else:
-        button_id = callback_context.triggered[0]['prop_id'].split('.')[0]
-
+def generate_content(button_id):
     if button_id == 'map-button':
-        options = map_view.options
         content = map_view.content
+        options = map_view.options
         second_content = map_view.second_content
     elif button_id == 'graphs-button':
         options = graph_view.options
         content = graph_view.content
         second_content = graph_view.second_content
-    else:
-        options = None
-        content = html.H1("This is a test view")
-        second_content = html.Div("This is second content goes")
         
     return html.Div([
         # Options Menu
@@ -68,15 +37,49 @@ def display_page(home_clicks, map_clicks, graphs_click):
         ], id="content-split"),
     ], id="section-content")
 
+# Callbacks to update the content based on the URL
 @app.callback(
-    Output('options', 'style'),
+    Output('page-content', 'children'),
+    [Input('map-button', 'n_clicks'),
+     Input('graphs-button', 'n_clicks')]
+)
+def display_page(map_clicks, graphs_click):
+    if not callback_context.triggered:
+        button_id = 'home-button'
+    else:
+        button_id = callback_context.triggered[0]['prop_id'].split('.')[0]
+    
+    return generate_content(button_id)
+
+@app.callback(
+    [Output('options', 'style'), Output('options-menu', 'className')],
     [Input('hamburger', 'n_clicks')]
 )
 def toggle_options(n_clicks):
     if n_clicks % 2 == 0:
-        return {'display': 'block'}
+        return {'display': 'block'}, ''
     else:
-        return {'display': 'none'}
+        return {'display': 'none'}, 'closed'
+    
+for output, inputs, func in map_view.callbacks:
+    app.callback(output, inputs)(func)
+
+for output, inputs, func in graph_view.callbacks:
+    app.callback(output, inputs)(func)
+
+app.layout = html.Div([
+    # Title
+    html.H1("Wikimap", id="title"),
+
+    # Menu bar
+    html.Div([
+        html.Button("Map", id="map-button", n_clicks=0, className="menu-button"),
+        html.Button("Graphs", id="graphs-button", n_clicks=0, className="menu-button"),
+    ], id="menu"),
+
+    # Main content
+    html.Div(generate_content('map-button'), id='page-content'),
+], id='root')
 
 if __name__ == "__main__":
     app.run(debug=True)

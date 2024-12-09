@@ -26,3 +26,4 @@ options = html.Div([
 second_content = html.Div([
     html.P("This is the second content in the graph view")
 ])
+callbacks = []

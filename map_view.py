@@ -3,6 +3,7 @@ import plotly.express as px
 import pandas as pd
 import sql
 
+
 sql.cursor.execute("SELECT a.name, a.pageviews, p.latitude, p.longitude FROM articles a JOIN places p ON a.place_id = p.id WHERE p.latitude IS NOT NULL AND p.longitude IS NOT NULL and a.pageviews > 0")
 rows = sql.cursor.fetchall()
 data = pd.DataFrame(rows, columns=["name", "pageviews", "lat", "lon"])
@@ -16,7 +17,7 @@ fig = px.scatter_map(
 )
 fig.update_traces(
     cluster=dict(
-        enabled=True,
+        enabled=False,
     )
 )
 fig.update_layout(
@@ -31,11 +32,24 @@ fig.update_layout(
 )
 
 content = html.Div([
-    dcc.Graph(figure=fig)
+    dcc.Graph(figure=fig, id="map")
 ])
 options = html.Div([
-    html.P("This is an option in the map view")
+    dcc.Checklist(
+        id='cluster-toggle',
+        options=[{'label': 'Enable Clusters', 'value': 'enabled'}],
+        value=[]
+    ),
 ])
 second_content = html.Div([
     html.P("This is the second content in the map view")
 ])
+
+def update_map(cluster_toggle):
+    if 'enabled' in cluster_toggle:
+        fig.update_traces(cluster=dict(enabled=True))
+    else:
+        fig.update_traces(cluster=dict(enabled=False))
+    return fig
+
+callbacks = [(Output('map', 'figure'), [Input('cluster-toggle', 'value')], update_map)]
