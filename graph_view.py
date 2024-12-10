@@ -109,7 +109,6 @@ def update_podium(category):
 
 content = html.Div([
     podium,
-    bubble_plot_content,
     dcc.Graph(figure=fig1),
     dcc.Graph(figure=fig2),
     categorical_bubble_plot_view,
