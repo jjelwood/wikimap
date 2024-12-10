@@ -115,7 +115,7 @@ def update_podium_callback(app):
         max_value = max(article[1] for article in articles)
 
         # Generate podium content
-        colors = ["gold", "silver", "bronze"]
+        colors = ["gold", "silver", "brown"]
         podiums = []
         for i, article in enumerate(articles):
             height_percentage = (article[1] / max_value) * 100  # Height proportional to the value
