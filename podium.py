@@ -9,9 +9,19 @@ dropdown_options = [
     {"label": "Reputable", "value": "Reputable"}
 ]
 
+continent_options = [
+    {"label": "World", "value": "World"},
+    {"label": "North America", "value": "North America"},
+    {"label": "South America", "value": "South America"},
+    {"label": "Africa", "value": "Africa"},
+    {"label": "Europe", "value": "Europe"},
+    {"label": "Asia", "value": "Asia"},
+    {"label": "Oceania", "value": "Oceania"},
+]
+
 # Layout for the podium
 podium_content = html.Div([
-    # Header with dropdown in between
+    # Header with dropdowns
     html.Div([
         html.Span("Top 3 Most ", style={"font-size": "24px", "color": "blue"}),
         dcc.Dropdown(
@@ -20,7 +30,13 @@ podium_content = html.Div([
             value="Viewed",
             style={"width": "150px", "display": "inline-block", "vertical-align": "middle"}
         ),
-        html.Span(" Articles", style={"font-size": "24px", "color": "blue"}),
+        html.Span(" Articles In ", style={"font-size": "24px", "color": "blue"}),
+        dcc.Dropdown(
+            id="continent-dropdown",
+            options=continent_options,
+            value="World",
+            style={"width": "150px", "display": "inline-block", "vertical-align": "middle"}
+        ),
     ], style={"text-align": "center", "margin-bottom": "20px"}),
 
     # Podium container
@@ -38,46 +54,60 @@ podium_content = html.Div([
 def update_podium_callback(app):
     @app.callback(
         Output("podium", "children"),
-        [Input("category-dropdown", "value")]
+        [Input("category-dropdown", "value"), Input("continent-dropdown", "value")]
     )
-    def update_podium(option):
-        print(f"Dropdown option selected: {option}")  # Debug
-        # Query based on dropdown selection
-        query = ""
+    def update_podium(option, continent):
+        print(f"Dropdown options selected: {option}, {continent}")  # Debug
+
+        # Build query based on dropdown selections
+        filter_query = ""
+        if continent != "World":
+            filter_query = f"AND places.continent = '{continent}'"
+
         if option == "Viewed":
-            query = """
-            SELECT name, pageviews
+            query = f"""
+            SELECT articles.name, articles.pageviews
             FROM articles
-            ORDER BY pageviews DESC
+            JOIN places ON articles.place_id = places.id
+            WHERE 1=1 {filter_query}
+            ORDER BY articles.pageviews DESC
             LIMIT 3;
             """
         elif option == "Cited":
-            query = """
-            SELECT name, citations
+            query = f"""
+            SELECT articles.name, articles.citations
             FROM articles
-            ORDER BY citations DESC
+            JOIN places ON articles.place_id = places.id
+            WHERE 1=1 {filter_query}
+            ORDER BY articles.citations DESC
             LIMIT 3;
             """
         elif option == "Linked":
-            query = """
+            query = f"""
             SELECT a.name, COUNT(l.from_id) AS links
             FROM articles a
+            JOIN places p ON a.place_id = p.id
             JOIN links l ON a.id = l.to_id
+            WHERE 1=1 {filter_query}
             GROUP BY a.name
             ORDER BY links DESC
             LIMIT 3;
             """
         elif option == "Reputable":
-            query = """
-            SELECT name, reputability_score
+            query = f"""
+            SELECT articles.name, articles.reputability_score
             FROM articles
-            ORDER BY reputability_score DESC
+            JOIN places ON articles.place_id = places.id
+            WHERE 1=1 {filter_query}
+            ORDER BY articles.reputability_score DESC
             LIMIT 3;
             """
+        else:
+            return [html.Div("No articles found", style={"text-align": "center", "margin": "20px"})]
+
         sql.cursor.execute(query)
         articles = sql.cursor.fetchall()
         print(f"Articles retrieved: {articles}")  # Debug
-        # No articles found case
         if not articles:
             return [html.Div("No articles found", style={"text-align": "center", "margin": "20px"})]
 
@@ -85,7 +115,7 @@ def update_podium_callback(app):
         max_value = max(article[1] for article in articles)
 
         # Generate podium content
-        colors = ["gold", "silver", "brown"]
+        colors = ["gold", "silver", "bronze"]
         podiums = []
         for i, article in enumerate(articles):
             height_percentage = (article[1] / max_value) * 100  # Height proportional to the value
