@@ -97,6 +97,7 @@ try:
     finally: # These operations have to be done over the entire dataset, so they are not chunked
         # wikipedia_query.get_links(sql.cursor)
         # reputability_score_calculation.calculate_score(sql.cursor)
+        # add_country_data.add_country_and_continent_to_places(sql.cursor)
         # add_country_data.add_country_data(sql.cursor)
         pass
 except Exception as e:

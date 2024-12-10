@@ -82,6 +82,6 @@ title=dict(
 )
 
 # Dash layout for the bubble plot
-bubble_plot_content = html.Div([
+categorical_bubble_plot_view = html.Div([
     dcc.Graph(figure=fig)
 ])

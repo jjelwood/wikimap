@@ -2,7 +2,8 @@ from dash import Dash, html, dcc, callback, Output, Input
 import plotly.express as px
 import pandas as pd
 import sql
-from Catergorical_Bubble_Plot_view import bubble_plot_content
+from Catergorical_Bubble_Plot_view import categorical_bubble_plot_view
+from Bubble_Plot_Realibility_Population import bubble_plot_realibility_population_content
 
 query = """
 SELECT a.name, COALESCE(a.pageviews, 0), COALESCE(a.citations,0), COALESCE(COUNT(l.from_id),0) AS incoming_links 
@@ -20,7 +21,8 @@ fig2 = px.scatter(data, x="Pageviews", y="Citations", hover_name="Name", log_x=T
 content = html.Div([
     dcc.Graph(figure=fig1),
     dcc.Graph(figure=fig2),
-    bubble_plot_content
+    categorical_bubble_plot_view,
+    bubble_plot_realibility_population_content
 ])
 options = html.Div([
     html.P("This is an option in the graph view")
