@@ -6,20 +6,24 @@ dropdown_options = [
     {"label": "Viewed", "value": "Viewed"},
     {"label": "Cited", "value": "Cited"},
     {"label": "Linked", "value": "Linked"},
-    {"label": "Young", "value": "Young"},
     {"label": "Reputable", "value": "Reputable"}
 ]
 
 # Layout for the podium
 podium_content = html.Div([
-    html.H2("Top 3 Most Articles", style={"text-align": "center", "color": "blue"}),
-    dcc.Dropdown(
-        id="category-dropdown",
-        options=dropdown_options,
-        value="Viewed",
-        style={"width": "50%", "margin": "auto"}
-    ),
-    # Set a fixed height for the podium container
+    # Header with dropdown in between
+    html.Div([
+        html.Span("Top 3 Most ", style={"font-size": "24px", "color": "blue"}),
+        dcc.Dropdown(
+            id="category-dropdown",
+            options=dropdown_options,
+            value="Viewed",
+            style={"width": "150px", "display": "inline-block", "vertical-align": "middle"}
+        ),
+        html.Span(" Articles", style={"font-size": "24px", "color": "blue"}),
+    ], style={"text-align": "center", "margin-bottom": "20px"}),
+
+    # Podium container
     html.Div(id="podium", style={
         "display": "flex",
         "justify-content": "space-evenly",
@@ -61,13 +65,6 @@ def update_podium_callback(app):
             JOIN links l ON a.id = l.to_id
             GROUP BY a.name
             ORDER BY links DESC
-            LIMIT 3;
-            """
-        elif option == "Young":
-            query = """
-            SELECT name, created
-            FROM articles
-            ORDER BY created DESC
             LIMIT 3;
             """
         elif option == "Reputable":
