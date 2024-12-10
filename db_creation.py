@@ -8,6 +8,7 @@ import coordinate_finder
 import pageview_data
 import get_reddit_data
 import reputability_score_calculation
+import add_country_data
 
 hard_reset = False
 
@@ -71,8 +72,8 @@ try:
 
     chunk_size = 10_000
     articles = 10_000
-    names = names_export.NameGenerator(config['names_path'])
-    names_export.update_urls(sql.cursor)
+    #names = names_export.NameGenerator(config['names_path'])
+    #names_export.update_urls(sql.cursor)
     try:
         for i in range(0, articles + 1, chunk_size):
             try:
@@ -96,7 +97,10 @@ try:
     finally: # These operations have to be done over the entire dataset, so they are not chunked
         # wikipedia_query.get_links(sql.cursor)
         # reputability_score_calculation.calculate_score(sql.cursor)
+        # add_country_data.add_country_data(sql.cursor)
         pass
+except Exception as e:
+    print(e)
 finally:
     print("Committing changes...")
     sql.conn.commit()
