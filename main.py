@@ -7,15 +7,32 @@ import graph_view
 
 app = Dash(__name__)
 
+registered_callbacks = set()
+
+def add_callback(output, inputs, func, prevent_initial_call=False):
+    callback_id = (
+        tuple(output) if isinstance(output, list) else output,
+        tuple(inputs) if isinstance(inputs, list) else inputs,
+    )
+    if callback_id not in registered_callbacks:
+        print("Adding callback", callback_id)
+        app.callback(output, inputs, prevent_initial_call)(func)
+        registered_callbacks.add(callback_id)
+
 def generate_content(button_id):
     if button_id == 'map-button':
         content = map_view.content
         options = map_view.options
         second_content = map_view.second_content
+        for output, inputs, func, prevent_initial_call in map_view.callbacks:
+            add_callback(output, inputs, func, prevent_initial_call)
     elif button_id == 'graphs-button':
         options = graph_view.options
         content = graph_view.content
         second_content = graph_view.second_content
+        for output, inputs, func, prevent_initial_call in graph_view.callbacks:
+            print(output, inputs, func, prevent_initial_call)
+            add_callback(output, inputs, func, prevent_initial_call)
         
     return html.Div([
         # Options Menu
@@ -58,12 +75,6 @@ def toggle_options(n_clicks):
         return {'display': 'block'}, ''
     else:
         return {'display': 'none'}, 'closed'
-    
-for output, inputs, func,prevent_initial_call in map_view.callbacks:
-    app.callback(output, inputs,prevent_initial_call=prevent_initial_call)(func)
-
-for output, inputs, func in graph_view.callbacks:
-    app.callback(output, inputs)(func)
 
 app.layout = html.Div([
     # Title

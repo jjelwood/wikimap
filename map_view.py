@@ -55,6 +55,8 @@ def update_map(cluster_toggle):
 
 # On_click event to show information related to articles
 def on_click(click_data):
+    if click_data is None:
+        return {"display": "none"}, None
     point=click_data["points"][0]
     custom_data=point.get("customdata")
     name=custom_data[0]
