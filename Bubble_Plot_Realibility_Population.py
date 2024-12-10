@@ -45,8 +45,8 @@ fig = px.scatter(
         "total_pageviews": "Total Page Views"
     },
     width=2200,  # Increase graph width significantly
-    height=1200,  # Maintain a large height for clarity
-    size_max=150  # Increase maximum bubble size further
+    height=2000,  # Maintain a large height for clarity
+    size_max=200  # Increase maximum bubble size further
 )
 
 # Customize Layout for Better Appearance
@@ -75,7 +75,7 @@ fig.update_layout(
             text="Reputability Score",
             font=dict(size=18)
         ),
-        range=[0, 0.6]  # Add some breathing space on the y-axis
+        range=[0, 0.5]  # Add some breathing space on the y-axis
     ),
     legend=dict(
         title=dict(text="Countries", font=dict(size=16)),
