@@ -3,6 +3,7 @@ import plotly.express as px
 import pandas as pd
 import sql
 
+
 sql.cursor.execute("SELECT a.name, a.pageviews, a.summary, p.latitude, p.longitude FROM articles a JOIN places p ON a.place_id = p.id WHERE p.latitude IS NOT NULL AND p.longitude IS NOT NULL and a.pageviews > 0")
 rows = sql.cursor.fetchall()
 data = pd.DataFrame(rows, columns=["name", "pageviews","summary", "lat", "lon"])
