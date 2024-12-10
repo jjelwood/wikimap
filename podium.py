@@ -19,7 +19,14 @@ podium_content = html.Div([
         value="Viewed",
         style={"width": "50%", "margin": "auto"}
     ),
-    html.Div(id="podium", style={"display": "flex", "justify-content": "space-evenly", "margin-top": "20px"})
+    # Set a fixed height for the podium container
+    html.Div(id="podium", style={
+        "display": "flex",
+        "justify-content": "space-evenly",
+        "align-items": "flex-end",  # Align podiums to the bottom
+        "margin-top": "20px",
+        "height": "300px",  # Fixed height for proportional scaling
+    })
 ])
 
 
@@ -77,12 +84,16 @@ def update_podium_callback(app):
         if not articles:
             return [html.Div("No articles found", style={"text-align": "center", "margin": "20px"})]
 
+        # Get the maximum value for proportional height calculation
+        max_value = max(article[1] for article in articles)
+
         # Generate podium content
-        colors = ["gold", "silver", "bronze"]
+        colors = ["gold", "silver", "brown"]
         podiums = []
         for i, article in enumerate(articles):
+            height_percentage = (article[1] / max_value) * 100  # Height proportional to the value
             podiums.append(
-                html.Div([
+                html.Div([  # Each podium
                     html.Div(f"{i + 1}", className="badge bg-primary",
                              style={"font-size": "20px", "margin-bottom": "10px"}),
                     html.Div(article[0],
@@ -91,10 +102,14 @@ def update_podium_callback(app):
                 ], style={
                     "background-color": colors[i],
                     "width": "30%",
+                    "height": f"{height_percentage}%",  # Dynamic height
                     "padding": "10px",
                     "border-radius": "10px",
                     "box-shadow": "0 4px 8px rgba(0, 0, 0, 0.1)",
-                    "text-align": "center"
+                    "text-align": "center",
+                    "display": "flex",
+                    "flex-direction": "column",
+                    "justify-content": "flex-end",  # Align content to the bottom
                 })
             )
         return podiums
