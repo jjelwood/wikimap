@@ -42,21 +42,43 @@ fig = px.scatter(
 )
 
 fig.update_layout(
+title=dict(
+        text="Bubble Plot of Wikipedia Articles by Continent and Year of Birth",
+        font=dict(size=24, color="black", family="Arial Black"),  # Bigger, bold title
+        x=0.5,  # Center the title
+        xanchor="center"
+    ),
     legend=dict(
-        title="Continents",
+        title=dict(
+            text="Continents",
+            font=dict(size=16, color="darkblue", family="Arial Black")  # Bold legend title
+        ),
+        font=dict(size=14, color="black", family="Arial"),  # Legend item font styling
+        bgcolor="rgba(255, 255, 255, 0.9)",  # Semi-transparent white background for better contrast
+        bordercolor="black",  # Add a border around the legend
+        borderwidth=2,  # Set border width
         x=1.05,  # Move legend outside the plot
         y=1,
-        traceorder="normal",
+        xanchor="left",
+        yanchor="top",
     ),
     yaxis=dict(
+        title=dict(
+            text="Year of Birth",
+            font=dict(size=18, color="darkblue", family="Arial"),  # Bold and larger font for y-axis label
+        ),
         tickmode="linear",
         tick0=0,
-        dtick=100,  # Space y-axis ticks every 50 years
+        dtick=50,  # Space y-axis ticks every 50 years
         range=[0, 2050],  # Set y-axis range
     ),
     xaxis=dict(
+        title=dict(
+            text="Continent",
+            font=dict(size=18, color="darkblue", family="Arial"),  # Bold and larger font for x-axis label
+        ),
         tickangle=-45,  # Rotate x-axis labels
-    )
+    ),  # Rotate x-axis labels
 )
 
 # Dash layout for the bubble plot
