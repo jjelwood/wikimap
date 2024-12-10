@@ -59,8 +59,8 @@ def toggle_options(n_clicks):
     else:
         return {'display': 'none'}, 'closed'
     
-for output, inputs, func in map_view.callbacks:
-    app.callback(output, inputs)(func)
+for output, inputs, func,prevent_initial_call in map_view.callbacks:
+    app.callback(output, inputs,prevent_initial_call=prevent_initial_call)(func)
 
 for output, inputs, func in graph_view.callbacks:
     app.callback(output, inputs)(func)
