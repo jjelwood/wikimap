@@ -11,17 +11,22 @@ from histogram import histogram_content
 
 
 query = """
-SELECT a.name, COALESCE(a.pageviews, 0), COALESCE(a.citations,0), COALESCE(COUNT(l.from_id),0) AS incoming_links 
+SELECT a.name, COALESCE(a.pageviews, 0), COALESCE(a.citations,0), COALESCE(COUNT(l.from_id),0) AS incoming_links, a.length 
 FROM articles a
 LEFT JOIN links l ON a.id = l.to_id
-GROUP BY a.name, a.pageviews, a.citations
+GROUP BY a.name, a.pageviews, a.citations, a.length
 """
 
 sql.cursor.execute(query)
 rows = sql.cursor.fetchall()
-data = pd.DataFrame(rows, columns=["Name", "Pageviews", "Citations", "Incoming Links"])
-fig1 = px.scatter(data, x="Pageviews", y="Incoming Links", hover_name="Name", log_x=True)
-fig2 = px.scatter(data, x="Pageviews", y="Citations", hover_name="Name", log_x=True)
+data = pd.DataFrame(rows, columns=["Name", "Pageviews", "Citations", "Incoming Links", "Article Length"])
+
+filtered_data = data[
+    (data["Incoming Links"] <= 200)
+]
+
+fig1 = px.scatter(filtered_data, x="Pageviews", y="Incoming Links", hover_name="Name", log_x=True, color="Article Length", color_continuous_scale="RdYlGn")
+fig2 = px.scatter(data, x="Pageviews", y="Citations", hover_name="Name", log_x=True, color="Article Length", color_continuous_scale="RdYlGn")
 
 content = html.Div([
     podium_content,
