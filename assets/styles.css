@@ -270,13 +270,18 @@ html, body {
     /* overflow: hidden; */
 }
 
-#graph-content > div, #graph-content > .dcc-Graph {
-    height: 500px;  /* Set a fixed height for all grid items */
-    width: 100%;
-}
-
 #categorical-bubble-plot {
     grid-row: span 3;
+    height: 1568px !important;
+}
+
+#graph-content > div, #graph-content > .dcc-Graph {
+    height: 500px;  /* Set a fixed height for all grid items */
+    width: calc(100%-10px);
+    border: 2px solid #e0e0e0;
+    border-radius: 8px; 
+    padding: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
 }
 
 #bubble-plot2 {

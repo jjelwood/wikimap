@@ -87,7 +87,7 @@ def update_podium_callback(app):
             JOIN places ON a.place_id = places.id
             JOIN links l ON a.id = l.to_id
             WHERE 1=1 {filter_query}
-            GROUP BY a.name, places.country
+            GROUP BY a.id, a.name, places.country
             ORDER BY links DESC
             LIMIT 3;
             """
@@ -98,7 +98,7 @@ def update_podium_callback(app):
             JOIN places ON a.place_id = places.id
             JOIN links l ON a.id = l.from_id
             WHERE 1=1 {filter_query}
-            GROUP BY a.name, places.country
+            GROUP BY a.id, a.name, places.country
             ORDER BY links DESC
             LIMIT 3;
             """
@@ -128,13 +128,13 @@ def update_podium_callback(app):
         medals = ["🥇", "🥈", "🥉"]
         podiums = []
         for i, article in enumerate(articles):
-            value = float(article[2])
+            value = float(article[2]) if option == "Reputable" else int(article[2])
             height_percentage = (value / max_value) * 100  # Height proportional to the value
             podiums.append(
                 html.Div([  # Each podium
                     html.Div(f"{medals[i]}", className="medal bg-primary"),
                     html.Img(src=f"assets/flags/{country_to_iso_code[countries[i]]}.svg", className="flag"),
-                    html.Div(style={"height": f"{1.5 * height_percentage}px"}),  # Spacer
+                    html.Div(style={"height": f"{2 * height_percentage}px"}),  # Spacer
                     html.Div(article[1],
                              style={"text-align": "center", "font-weight": "bold", "margin-bottom": "10px"}),
                     html.Div(f"Value: {value:,}", style={"text-align": "center", "color": "gray"})

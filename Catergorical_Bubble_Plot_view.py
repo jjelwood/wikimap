@@ -38,7 +38,7 @@ fig = px.scatter(
     hover_name="article_name",
     title="Wikipedia Articles by Continent and Year of Birth",
     labels={"continent": "Continent", "year_of_birth": "Year of Birth"},
-    height=1000,  # Make the graph taller
+    height=1500,  # Make the graph taller
     size_max=100,  # Increase max size of bubbles
     custom_data=["id"], 
 )
