@@ -4,8 +4,7 @@ import pandas as pd
 import sql
 from Catergorical_Bubble_Plot_view import categorical_bubble_plot_view
 from Bubble_Plot_Realibility_Population import bubble_plot_realibility_population_content
-import json
-from podium import podium_content, update_podium_callback
+from podium import podium_content
 
 
 query = """
@@ -34,3 +33,4 @@ options = html.Div([
 second_content = html.Div([
     html.P("This is the second content in the graph view")
 ])
+callbacks = []
