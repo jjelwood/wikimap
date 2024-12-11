@@ -5,10 +5,7 @@ import sql
 import map_view
 import graph_view
 from podium import update_podium_callback
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 app = Dash(__name__, suppress_callback_exceptions=True)
 
 registered_callbacks = set()
