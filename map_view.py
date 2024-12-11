@@ -75,7 +75,7 @@ def on_click(click_data):
     result = sql.cursor.fetchone()
 
     if not result or not result[0]:
-        return None, None
+        return {"display": "none"}, None, None
 
     pageviews_dict = json.loads(result[0])  # Parse JSON string
     monthly_pageviews = list(pageviews_dict.values())
@@ -94,7 +94,7 @@ def on_click(click_data):
     # Return Dash components
     summary_component = article_summary.get_article_summary(article_id)
 
-    return summary_component, dcc.Graph(figure=fig)
+    return {"display": "block"}, summary_component, dcc.Graph(figure=fig)
 
 callbacks = [
     (
@@ -105,6 +105,7 @@ callbacks = [
     ),
     (
         [
+            Output('secondary-content-container', 'style', allow_duplicate=True),
             Output('secondary-content', 'children', allow_duplicate=True),
             Output('graph-container', 'children')
         ],

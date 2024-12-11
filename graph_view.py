@@ -44,17 +44,20 @@ def show_article_summary(data1, data2, data3):
     elif callback_context.triggered_id == "bubble-plot1":
         data = data3
     id = data["points"][0]["customdata"][0]
-    return [get_article_summary(id)]
+    return {"display": "block"}, [get_article_summary(id)]
 
 def show_country_summary(data):
     if data is None:
-        return None
+        return {"display": "none"}, None
     name = data["points"][0]["customdata"][0]
-    return [get_country_summary(name)]
+    return {"display": "block"}, [get_country_summary(name)]
 
 callbacks = [
     (
-        Output("secondary-content", "children", allow_duplicate = True),
+        [
+            Output("secondary-content-container", "style", allow_duplicate = True),
+            Output("secondary-content", "children", allow_duplicate = True)
+        ],
         [
             Input("scatter-plot1", "clickData"), 
             Input("scatter-plot2", "clickData"),
@@ -64,7 +67,10 @@ callbacks = [
         True
     ),
     (
-        Output("secondary-content", "children", allow_duplicate=True),
+        [
+            Output("secondary-content-container", "style", allow_duplicate = True),
+            Output("secondary-content", "children", allow_duplicate = True),
+        ],
         [Input("bubble-plot2", "clickData")],
         show_country_summary,
         True

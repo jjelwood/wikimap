@@ -25,13 +25,38 @@ def get_country_summary(country_name):
     data = sql.cursor.fetchone()
     if data is None:
         return None
+    
     name, total_pageviews, avg_reputability, population, article_count = data
     iso_code = country_name_to_iso_code.get(name, "unknown")
+
     return html.Div([
-        html.H2(name),
-        html.Img(src=f"assets/flags/{iso_code}.svg", alt=f"Flag of the {name}"),
-        html.P(f"Population: {population:,}"),
-        html.P(f"Average Reputability: {avg_reputability:.3f}"),
-        html.P(f"Total Pageviews: {total_pageviews:,}"),
-        html.P(f"Article Count: {article_count}")
-    ])
+        # Country Header with Flag
+        html.Div([
+            html.H2(name, className="country-title"),
+            html.Img(
+                src=f"assets/flags/{iso_code}.svg", 
+                alt=f"Flag of {name}", 
+                className="country-flag"
+            ),
+        ], className="country-header"),
+        
+        # Statistics section
+        html.Div([
+            html.Div([
+                html.Span("👁️", className="icon"),
+                html.P(f"Total Pageviews: {total_pageviews:,}", className="metric-text"),
+            ], className="metric"),
+            html.Div([
+                html.Span("📊", className="icon"),
+                html.P(f"Average Reputability: {avg_reputability:.2f}", className="metric-text"),
+            ], className="metric"),
+            html.Div([
+                html.Span("👥", className="icon"),
+                html.P(f"Population: {population:,}", className="metric-text"),
+            ], className="metric"),
+            html.Div([
+                html.Span("📰", className="icon"),
+                html.P(f"Number of Articles: {article_count:,}", className="metric-text"),
+            ], className="metric"),
+        ], className="metrics"),
+    ], className="country-summary-container")

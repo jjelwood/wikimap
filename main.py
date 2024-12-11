@@ -39,7 +39,12 @@ def generate_content(button_id):
             ], id="options"),
         ], id="options-menu"),
 
-        html.Div([second_content], id="secondary-content"),
+        html.Div([
+            html.Button("✕", id="close-button"),
+            html.Div([second_content], id="secondary-content")
+        ],
+        style={'display': 'none'},
+        id="secondary-content-container"),
 
         content,
     ], id="section-content")
@@ -69,6 +74,15 @@ def toggle_options(n_clicks):
         return {'display': 'block'}, ''
     else:
         return {'display': 'none'}, 'closed'
+
+# Separate callback to close the secondary content menu
+@app.callback(
+    Output('secondary-content-container', 'style', allow_duplicate=True),
+    [Input('close-button', 'n_clicks')],
+    prevent_initial_call=True
+)
+def close_secondary_content(n_clicks):
+    return {'display': 'none'}
 
 
 # Add all the callbacks from map_view and graph_view

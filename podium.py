@@ -152,7 +152,10 @@ def update_podium_callback(app):
         return podiums
     
     @app.callback(
-        Output("secondary-content", "children", allow_duplicate=True),
+        [
+            Output("secondary-content-container", "style", allow_duplicate=True),
+            Output("secondary-content", "children", allow_duplicate=True)
+        ],
         [Input({"type": "podium-article", "index": ALL}, "n_clicks")],
         [State({"type": "podium-article", "index": ALL}, "id")],
         prevent_initial_call=True
@@ -160,8 +163,8 @@ def update_podium_callback(app):
     def show_article_summary(n_clicks, ids):
         ctx = callback_context
         if not ctx.triggered or not any(n_clicks):
-            return None
+            return {"display": "none"}, None
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
         article_id = eval(button_id)["index"]
         print(article_id, n_clicks)
-        return [get_article_summary(article_id)]
+        return {"display": "block"}, [get_article_summary(article_id)]

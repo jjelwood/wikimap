@@ -144,7 +144,7 @@ html, body {
     background-color: #0056b3;
 }
 
-#secondary-content {
+#secondary-content-container {
     position: fixed;
     bottom: 10px;
     left: 10px;
@@ -153,15 +153,10 @@ html, body {
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     padding: 10px;
-    width: 220px;
+    width: 320px;
     overflow: hidden;
     transition: all 0.3s ease;
     z-index: 1;
-    cursor: move; /* Indicates it's draggable */
-}
-
-#secondary-content * {
-    user-select: none; /* Disable text highlighting */
 }
 
 /* Podium Styling */
@@ -294,3 +289,148 @@ html, body {
     }
 }
 
+/* Main container for the article summary */
+.article-summary-container, .country-summary-container {
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 500px;
+    margin: 20px auto;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    transition: transform 0.2s ease;
+}
+
+/* Header container with title and reputation badge */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.article-title, .country-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #4ea6ff;
+    margin: 0;
+}
+
+.reputation-badge {
+    background-color: #ffd700;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+
+}
+
+/* Summary text */
+.article-summary {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Metrics grid styling */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.metric {
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    font-size: 20px;
+    margin-right: 10px;
+    color: #4ea6ff;
+}
+
+.metric-text {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Footer container with read-more button */
+.footer-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.read-more-button {
+    display: inline-block;
+    background-color: #4ea6ff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.read-more-button:hover {
+    background-color: #003d99;
+}
+
+/* Close Button Styling */
+#close-button {
+    background-color: #f44336; /* Softer red for the button */
+    color: white; /* High contrast for the 'X' */
+    padding: 5px 10px;
+    border: 2px solid white; /* Adds an outline to make it pop */
+    border-radius: 50%; /* Circular button */
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth animations */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center the 'X' */
+    font-size: 16px; /* Larger font size for better readability */
+    font-weight: bold; /* Bold for visibility */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); /* Subtle shadow for better contrast */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Floating effect */
+}
+
+#close-button:hover {
+    transform: scale(1.1); /* Slight enlargement */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+    background-color: #d32f2f; /* Slightly darker red */
+    border-color: #f1f1f1; /* Subtle change to border */
+}
+
+#close-button:active {
+    transform: scale(0.95); /* Slight shrinkage */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Revert shadow */
+}
+
+/* Header with Flag and Title */
+
+.country-header {
+    display: block;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.country-flag {
+    width: 100px;
+    height: auto;
+    border-radius: 5px;
+    margin-right: 15px;
+    position: relative;
+    top: -50px;
+    right: 5px;
+    border: 1px solid #333;
+}
