@@ -274,3 +274,20 @@ html, body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+#graph-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* Two equal-sized columns */
+    gap: 20px;
+    box-sizing: border-box;  /* Include padding and border in the element's total width and height */
+    overflow: hidden;
+}
+
+#graph-content > div, #graph-content > .dcc-Graph {
+    height: 500px;  /* Set a fixed height for all grid items */
+    width: 100%;
+}
+
+#categorical-bubble-plot {
+    grid-row: span 2;
+}
+

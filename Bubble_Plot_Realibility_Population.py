@@ -38,14 +38,13 @@ fig = px.scatter(
     size="total_pageviews",  # Bubble size represents total page views
     text="country",  # Country names inside the bubbles
     color="country",  # Different colors for each country
-    title="Bubble Plot of Country Reputability vs Population",
     labels={
         "population": "Population (log scale)",
         "avg_reputability": "Reputability Score",
         "total_pageviews": "Total Page Views"
     },
-    width=2200,  # Increase graph width significantly
-    height=2000,  # Maintain a large height for clarity
+    # width=2200,  # Increase graph width significantly
+    # height=2000,  # Maintain a large height for clarity
     size_max=200  # Increase maximum bubble size further
 )
 
@@ -56,7 +55,7 @@ fig.update_traces(
 )
 fig.update_layout(
     title=dict(
-        text="Bubble Plot of Country Reputability vs Population",
+        text="Pageviews by Reputability and Population",
         font=dict(size=24, family="Arial Black"),
         x=0.5,
         xanchor="center"
@@ -77,14 +76,9 @@ fig.update_layout(
         ),
         range=[0, 0.5]  # Add some breathing space on the y-axis
     ),
-    legend=dict(
-        title=dict(text="Countries", font=dict(size=16)),
-        font=dict(size=14),
-        bordercolor="Black",
-        borderwidth=1
-    ),
+    showlegend=False,  # Remove the legend for clarity
     margin=dict(l=50, r=50, t=100, b=50),  # Adjust margins for clarity
-    autosize=False  # Prevent automatic resizing to maintain wider proportions
+    autosize=True  # Prevent automatic resizing to maintain wider proportions
 )
 
 # Output the figure (integrate it into Dash)

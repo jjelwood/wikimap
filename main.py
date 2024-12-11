@@ -74,7 +74,7 @@ def display_page(map_clicks, graphs_click):
     [Input('hamburger', 'n_clicks')]
 )
 def toggle_options(n_clicks):
-    if n_clicks % 2 == 0:
+    if n_clicks % 2 == 1:
         return {'display': 'block'}, ''
     else:
         return {'display': 'none'}, 'closed'

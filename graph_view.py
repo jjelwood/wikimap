@@ -22,11 +22,11 @@ fig2 = px.scatter(data, x="Pageviews", y="Citations", hover_name="Name", log_x=T
 
 content = html.Div([
     podium_content,
+    html.Div(categorical_bubble_plot_view, id="categorical-bubble-plot"),
     dcc.Graph(figure=fig1),
     dcc.Graph(figure=fig2),
-    categorical_bubble_plot_view,
     bubble_plot_realibility_population_content
-])
+], id="graph-content")
 options = html.Div([
     html.P("This is an option in the graph view")
 ])

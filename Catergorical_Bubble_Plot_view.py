@@ -35,15 +35,15 @@ fig = px.scatter(
     size="page_views",
     color="continent",
     hover_name="article_name",
-    title="Bubble Plot of Wikipedia Articles by Continent and Year of Birth",
+    title="Wikipedia Articles by Continent and Year of Birth",
     labels={"continent": "Continent", "year_of_birth": "Year of Birth"},
-    height=1500,  # Make the graph taller
+    height=1000,  # Make the graph taller
     size_max=100  # Increase max size of bubbles
 )
 
 fig.update_layout(
 title=dict(
-        text="Bubble Plot of Wikipedia Articles by Continent and Year of Birth",
+        text="Pageviews by Continent and Year of Birth",
         font=dict(size=24, color="black", family="Arial Black"),  # Bigger, bold title
         x=0.5,  # Center the title
         xanchor="center"
@@ -69,7 +69,7 @@ title=dict(
         ),
         tickmode="linear",
         tick0=0,
-        dtick=50,  # Space y-axis ticks every 50 years
+        dtick=100,  # Space y-axis ticks every 50 years
         range=[0, 2050],  # Set y-axis range
     ),
     xaxis=dict(
