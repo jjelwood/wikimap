@@ -106,7 +106,7 @@ def update_podium_callback(app):
             return [html.Div("No articles found", style={"text-align": "center", "margin": "20px"})]
 
         # Get the maximum value for proportional height calculation
-        max_value = max(article[1] for article in articles)
+        max_value = max(float(article[1]) for article in articles) or 1
         countries = [article[-1] for article in articles]
 
         # Generate podium content
@@ -114,8 +114,8 @@ def update_podium_callback(app):
         medals = ["🥇", "🥈", "🥉"]
         podiums = []
         for i, article in enumerate(articles):
-            height_percentage = (article[1] / max_value) * 100  # Height proportional to the value
-            print(height_percentage)
+            value = float(article[1])
+            height_percentage = (value / max_value) * 100  # Height proportional to the value
             podiums.append(
                 html.Div([  # Each podium
                     html.Div(f"{medals[i]}", className="medal bg-primary"),
@@ -123,7 +123,7 @@ def update_podium_callback(app):
                     html.Div(style={"height": f"{1.5 * height_percentage}px"}),  # Spacer
                     html.Div(article[0],
                              style={"text-align": "center", "font-weight": "bold", "margin-bottom": "10px"}),
-                    html.Div(f"Value: {article[1]:,}", style={"text-align": "center", "color": "gray"})
+                    html.Div(f"Value: {value:,}", style={"text-align": "center", "color": "gray"})
                 ], style={
                     "background-color": colors[i],
                 }, className="podium-article")
