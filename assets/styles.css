@@ -195,6 +195,14 @@ html, body {
     font-weight: bold;
     color: #4ea6ff;
     text-align: center;
+    margin: 20px;
+}
+
+#podium-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
     margin-bottom: 20px;
 }
 
@@ -205,6 +213,7 @@ html, body {
     align-items: flex-end;
     gap: 20px;
     width: 100%;
+    height: 250px;
 }
 
 .podium-article {
@@ -224,22 +233,6 @@ html, body {
     transform: scale(1.05);
 }
 
-/* Individual Placements */
-.first-place {
-    height: 300px;
-    background-color: #ffe08a;
-}
-
-.second-place {
-    height: 250px;
-    background-color: #c7c7c7;
-}
-
-.third-place {
-    height: 200px;
-    background-color: #f0c4a3;
-}
-
 /* Medal Styling */
 .medal {
     font-size: 32px;
@@ -253,10 +246,16 @@ html, body {
 
 /* Flag Styling */
 .flag {
-    width: 60px;
+    width: 100px;
     margin-top: 40px;
     height: auto;
     margin-bottom: 10px;
+}
+
+.podium-dropdown {
+    width: 150px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 /* Article List */

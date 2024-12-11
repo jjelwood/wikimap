@@ -1,5 +1,6 @@
 from dash import html, dcc, Input, Output
 import sql
+import json
 
 # Dropdown options
 dropdown_options = [
@@ -19,34 +20,30 @@ continent_options = [
     {"label": "Oceania", "value": "Oceania"},
 ]
 
+country_to_iso_code = json.load(open("iso_codes.json"))
+
 # Layout for the podium
 podium_content = html.Div([
     # Header with dropdowns
     html.Div([
-        html.Span("Top 3 Most ", style={"font-size": "24px", "color": "blue"}),
+        html.H2("Top 3 Most", className="podium-title"),
         dcc.Dropdown(
             id="category-dropdown",
             options=dropdown_options,
             value="Viewed",
-            style={"width": "150px", "display": "inline-block", "vertical-align": "middle"}
+            className="podium-dropdown",
         ),
-        html.Span(" Articles In ", style={"font-size": "24px", "color": "blue"}),
+        html.H2(" Articles In ", className="podium-title"),
         dcc.Dropdown(
             id="continent-dropdown",
             options=continent_options,
             value="World",
-            style={"width": "150px", "display": "inline-block", "vertical-align": "middle"}
+            className="podium-dropdown",
         ),
-    ], style={"text-align": "center", "margin-bottom": "20px"}),
+    ], id="podium-header"),
 
     # Podium container
-    html.Div(id="podium", style={
-        "display": "flex",
-        "justify-content": "space-evenly",
-        "align-items": "flex-end",  # Align podiums to the bottom
-        "margin-top": "20px",
-        "height": "300px",  # Fixed height for proportional scaling
-    })
+    html.Div(id="podium", className="podium")
 ])
 
 
@@ -57,8 +54,6 @@ def update_podium_callback(app):
         [Input("category-dropdown", "value"), Input("continent-dropdown", "value")]
     )
     def update_podium(option, continent):
-        print(f"Dropdown options selected: {option}, {continent}")  # Debug
-
         # Build query based on dropdown selections
         filter_query = ""
         if continent != "World":
@@ -66,7 +61,7 @@ def update_podium_callback(app):
 
         if option == "Viewed":
             query = f"""
-            SELECT articles.name, articles.pageviews
+            SELECT articles.name, articles.pageviews, places.country
             FROM articles
             JOIN places ON articles.place_id = places.id
             WHERE 1=1 {filter_query}
@@ -75,7 +70,7 @@ def update_podium_callback(app):
             """
         elif option == "Cited":
             query = f"""
-            SELECT articles.name, articles.citations
+            SELECT articles.name, articles.citations, places.country
             FROM articles
             JOIN places ON articles.place_id = places.id
             WHERE 1=1 {filter_query}
@@ -84,7 +79,7 @@ def update_podium_callback(app):
             """
         elif option == "Linked":
             query = f"""
-            SELECT a.name, COUNT(l.from_id) AS links
+            SELECT a.name, COUNT(l.from_id), p.country AS links
             FROM articles a
             JOIN places p ON a.place_id = p.id
             JOIN links l ON a.id = l.to_id
@@ -95,7 +90,7 @@ def update_podium_callback(app):
             """
         elif option == "Reputable":
             query = f"""
-            SELECT articles.name, articles.reputability_score
+            SELECT articles.name, articles.reputability_score, places.country
             FROM articles
             JOIN places ON articles.place_id = places.id
             WHERE 1=1 {filter_query}
@@ -107,36 +102,34 @@ def update_podium_callback(app):
 
         sql.cursor.execute(query)
         articles = sql.cursor.fetchall()
-        print(f"Articles retrieved: {articles}")  # Debug
         if not articles:
             return [html.Div("No articles found", style={"text-align": "center", "margin": "20px"})]
 
         # Get the maximum value for proportional height calculation
         max_value = max(article[1] for article in articles)
+        countries = [article[-1] for article in articles]
 
         # Generate podium content
-        colors = ["gold", "silver", "brown"]
+        colors = ["#ffe08a", "#c7c7c7", "#f0c4a3"]
+        medals = ["🥇", "🥈", "🥉"]
         podiums = []
         for i, article in enumerate(articles):
             height_percentage = (article[1] / max_value) * 100  # Height proportional to the value
+            print(height_percentage)
             podiums.append(
                 html.Div([  # Each podium
-                    html.Div(f"{i + 1}", className="badge bg-primary",
-                             style={"font-size": "20px", "margin-bottom": "10px"}),
+                    html.Div(f"{medals[i]}", className="medal bg-primary"),
+                    html.Img(src=f"assets/flags/{country_to_iso_code[countries[i]]}.svg", className="flag"),
                     html.Div(article[0],
                              style={"text-align": "center", "font-weight": "bold", "margin-bottom": "10px"}),
-                    html.Div(f"Value: {article[1]}", style={"text-align": "center", "color": "gray"})
+                    html.Div(f"Value: {article[1]:,}", style={"text-align": "center", "color": "gray"})
                 ], style={
                     "background-color": colors[i],
-                    "width": "30%",
                     "height": f"{height_percentage}%",  # Dynamic height
-                    "padding": "10px",
-                    "border-radius": "10px",
-                    "box-shadow": "0 4px 8px rgba(0, 0, 0, 0.1)",
-                    "text-align": "center",
-                    "display": "flex",
-                    "flex-direction": "column",
-                    "justify-content": "flex-end",  # Align content to the bottom
-                })
+                }, className="podium-article")
             )
+        
+        # Rearrange the podiums
+        podiums = [podiums[1], podiums[0], podiums[2]]
+
         return podiums
