@@ -71,7 +71,7 @@ def on_click(click_data):
     article_id = custom_data[0]
 
     # Get the summary
-    summary = article_summary.get_summary(article_id)
+    summary = article_summary.get_article_summary(article_id)
 
     # Query the monthly pageviews
     sql.cursor.execute("SELECT monthly_pageviews FROM articles WHERE id = %s", (article_id,))
