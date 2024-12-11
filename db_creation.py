@@ -6,7 +6,7 @@ import json
 import sql
 import coordinate_finder
 import pageview_data
-import get_reddit_data
+#import get_reddit_data
 import reputability_score_calculation
 import add_country_data
 
@@ -84,7 +84,7 @@ try:
                 # wikipedia_query.get_edits_and_editors(sql.cursor)
                 # get_citations.get_citations(sql.cursor)
                 # coordinate_finder.add_coordinates(sql.cursor)
-                # pageview_data.add_pageviews(sql.cursor)
+                pageview_data.add_pageviews(sql.cursor)
                 # get_reddit_data.get_reddit_data(sql.cursor)
                 pass
             except Exception as e:

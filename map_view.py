@@ -4,6 +4,8 @@ import pandas as pd
 import sql
 import article_summary
 from heatmap import view_heatmap_content
+import plotly.graph_objs as go
+import json
 
 sql.cursor.execute("SELECT a.id, a.name, a.pageviews, a.summary, p.latitude, p.longitude FROM articles a JOIN places p ON a.place_id = p.id WHERE p.latitude IS NOT NULL AND p.longitude IS NOT NULL and a.pageviews > 0")
 rows = sql.cursor.fetchall()
@@ -34,7 +36,13 @@ fig.update_layout(
 )
 
 content = html.Div([
+    # Map
     dcc.Graph(figure=fig, id="map"),
+
+    # Graph container for monthly pageviews (immediately below the map)
+    html.Div(id="graph-container"),
+
+    # Heatmap content can be added elsewhere if still needed
     view_heatmap_content
 ])
 options = html.Div([
@@ -56,24 +64,54 @@ def update_map(cluster_toggle):
 # On_click event to show information related to articles
 def on_click(click_data):
     if click_data is None:
-        return {"display": "none"}, None
-    point=click_data["points"][0]
-    custom_data=point.get("customdata")
-    id = custom_data[0]
-    return article_summary.get_article_summary(id)
+        return {"display": "none"}, "", None
+
+    point = click_data["points"][0]
+    custom_data = point.get("customdata")
+    article_id = custom_data[0]
+
+    # Get the summary
+    summary = article_summary.get_summary(article_id)
+
+    # Query the monthly pageviews
+    sql.cursor.execute("SELECT monthly_pageviews FROM articles WHERE id = %s", (article_id,))
+    result = sql.cursor.fetchone()
+
+    if not result or not result[0]:
+        return {"display": "block"}, html.P(summary), None
+
+    pageviews_dict = json.loads(result[0])  # Parse JSON string
+    monthly_pageviews = list(pageviews_dict.values())
+    months = [f"Month {i + 1}" for i in range(len(monthly_pageviews))]
+
+    # Create the graph
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=months, y=monthly_pageviews, mode='lines+markers'))
+    fig.update_layout(
+        title="Monthly Pageviews",
+        xaxis_title="Month",
+        yaxis_title="Pageviews",
+        margin={"l": 40, "r": 40, "t": 40, "b": 40}
+    )
+
+    # Return Dash components
+    summary_component = html.Div([
+        html.H4(f"Article Name: {custom_data[1]}"),
+        html.P(f"Pageviews: {custom_data[2]}"),
+        html.P(f"Summary: {summary}")
+    ])
+
+    return {"display": "block"}, summary_component, dcc.Graph(figure=fig)
 
 callbacks = [
+    (Output('map', 'figure'), [Input('cluster-toggle', 'value')], update_map, False),
     (
-        Output('map', 'figure'), 
-        [Input('cluster-toggle', 'value')],
-        update_map,
-        False
-    ),
-    (
-        Output('secondary-content','children', allow_duplicate = True),
         [
-            Input('map','clickData')
+            Output('secondary-content', 'style'),
+            Output('secondary-content', 'children'),
+            Output('graph-container', 'children')
         ],
+        [Input('map', 'clickData')],
         on_click,
         True
     )
