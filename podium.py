@@ -79,12 +79,12 @@ def update_podium_callback(app):
             """
         elif option == "Linked":
             query = f"""
-            SELECT a.name, COUNT(l.from_id), places.country AS links
+            SELECT a.name, COUNT(l.from_id) AS links, places.country 
             FROM articles a
             JOIN places ON a.place_id = places.id
             JOIN links l ON a.id = l.to_id
             WHERE 1=1 {filter_query}
-            GROUP BY a.name
+            GROUP BY a.name, places.country
             ORDER BY links DESC
             LIMIT 3;
             """
@@ -120,12 +120,12 @@ def update_podium_callback(app):
                 html.Div([  # Each podium
                     html.Div(f"{medals[i]}", className="medal bg-primary"),
                     html.Img(src=f"assets/flags/{country_to_iso_code[countries[i]]}.svg", className="flag"),
+                    html.Div(style={"height": f"{1.5 * height_percentage}px"}),  # Spacer
                     html.Div(article[0],
                              style={"text-align": "center", "font-weight": "bold", "margin-bottom": "10px"}),
                     html.Div(f"Value: {article[1]:,}", style={"text-align": "center", "color": "gray"})
                 ], style={
                     "background-color": colors[i],
-                    "height": f"{height_percentage}%",  # Dynamic height
                 }, className="podium-article")
             )
         
