@@ -64,21 +64,18 @@ def update_map(cluster_toggle):
 # On_click event to show information related to articles
 def on_click(click_data):
     if click_data is None:
-        return {"display": "none"}, "", None
+        return None, None
 
     point = click_data["points"][0]
     custom_data = point.get("customdata")
     article_id = custom_data[0]
-
-    # Get the summary
-    summary = article_summary.get_article_summary(article_id)
 
     # Query the monthly pageviews
     sql.cursor.execute("SELECT monthly_pageviews FROM articles WHERE id = %s", (article_id,))
     result = sql.cursor.fetchone()
 
     if not result or not result[0]:
-        return {"display": "block"}, html.P(summary), None
+        return None, None
 
     pageviews_dict = json.loads(result[0])  # Parse JSON string
     monthly_pageviews = list(pageviews_dict.values())
@@ -95,20 +92,20 @@ def on_click(click_data):
     )
 
     # Return Dash components
-    summary_component = html.Div([
-        html.H4(f"Article Name: {custom_data[1]}"),
-        html.P(f"Pageviews: {custom_data[2]}"),
-        html.P(f"Summary: {summary}")
-    ])
+    summary_component = article_summary.get_article_summary(article_id)
 
-    return {"display": "block"}, summary_component, dcc.Graph(figure=fig)
+    return summary_component, dcc.Graph(figure=fig)
 
 callbacks = [
-    (Output('map', 'figure'), [Input('cluster-toggle', 'value')], update_map, False),
+    (
+        Output('map', 'figure'),
+        [Input('cluster-toggle', 'value')],
+        update_map,
+        False
+    ),
     (
         [
-            Output('secondary-content', 'style'),
-            Output('secondary-content', 'children'),
+            Output('secondary-content', 'children', allow_duplicate=True),
             Output('graph-container', 'children')
         ],
         [Input('map', 'clickData')],

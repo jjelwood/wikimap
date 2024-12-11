@@ -64,7 +64,7 @@ callbacks = [
         True
     ),
     (
-        Output("secondary-content", "children"),
+        Output("secondary-content", "children", allow_duplicate=True),
         [Input("bubble-plot2", "clickData")],
         show_country_summary,
         True

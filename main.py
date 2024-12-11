@@ -10,7 +10,7 @@ app = Dash(__name__, suppress_callback_exceptions=True)
 
 
 def add_callback(output, inputs, func, prevent_initial_call=False):
-    app.callback(output, inputs, prevent_initial_call, allow_duplicate=True)(func)
+    app.callback(output, inputs, prevent_initial_call)(func)
 
 
 update_podium_callback(app)
@@ -58,27 +58,6 @@ def display_page(map_clicks, graphs_click):
         button_id = callback_context.triggered[0]['prop_id'].split('.')[0]
 
     return generate_content(button_id)
-
-
-# Separate callback for updating the content of secondary-section (map or graph content)
-@app.callback(
-    Output('secondary-content', 'children'),
-    [Input('map-button', 'n_clicks'),
-     Input('graphs-button', 'n_clicks')]
-)
-def update_secondary_content(map_clicks, graphs_click):
-    # Check which button was clicked using callback context
-    if not callback_context.triggered:
-        button_id = 'map-button'  # Default to 'map-button'
-    else:
-        button_id = callback_context.triggered[0]['prop_id'].split('.')[0]
-
-    # Return the appropriate second content based on the button clicked
-    if button_id == 'map-button':
-        return map_view.second_content
-    elif button_id == 'graphs-button':
-        return graph_view.second_content
-
 
 # Separate callback to control the visibility of the options menu (hamburger)
 @app.callback(
