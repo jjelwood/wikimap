@@ -419,7 +419,7 @@ html, body {
 /* Header with Flag and Title */
 
 .country-header {
-    display: block;
+    display: flex;
     align-items: center;
     margin-bottom: 20px;
 }
@@ -429,8 +429,6 @@ html, body {
     height: auto;
     border-radius: 5px;
     margin-right: 15px;
-    position: relative;
-    top: -50px;
-    right: 5px;
+    margin-left: auto;
     border: 1px solid #333;
 }
