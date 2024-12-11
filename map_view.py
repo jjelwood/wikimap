@@ -42,9 +42,7 @@ options = html.Div([
         value=[]
     ),
 ])
-second_content = html.Div([
-    html.P("This is the second content in the map view")
-])
+second_content = None
 
 def update_map(cluster_toggle):
     if 'enabled' in cluster_toggle:
@@ -60,8 +58,21 @@ def on_click(click_data):
     point=click_data["points"][0]
     custom_data=point.get("customdata")
     id = custom_data[0]
-    return article_summary.get_summary(id)
+    return article_summary.get_article_summary(id)
 
-callbacks = [(Output('map', 'figure'), [Input('cluster-toggle', 'value')], update_map,False),
-             ([Output('secondary-content','style'),Output('secondary-content','children')],[Input('map','clickData')],on_click,True)
-             ]
+callbacks = [
+    (
+        Output('map', 'figure'), 
+        [Input('cluster-toggle', 'value')],
+        update_map,
+        False
+    ),
+    (
+        Output('secondary-content','children', allow_duplicate = True),
+        [
+            Input('map','clickData')
+        ],
+        on_click,
+        True
+    )
+]

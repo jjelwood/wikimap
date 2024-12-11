@@ -5,6 +5,7 @@ import sql
 
 # Query data
 sql.cursor.execute("""SELECT 
+        articles.id,
         places.continent,
         YEAR(articles.date) AS year_of_birth,
         articles.pageviews,
@@ -22,7 +23,7 @@ sql.cursor.execute("""SELECT
 rows = sql.cursor.fetchall()
 
 # Create a DataFrame
-data = pd.DataFrame(rows, columns=["continent", "year_of_birth", "page_views", "article_name"])
+data = pd.DataFrame(rows, columns=["id", "continent", "year_of_birth", "page_views", "article_name"])
 
 # Clean the data: Replace NaN in 'page_views' with 0 and ensure numeric type
 data["page_views"] = pd.to_numeric(data["page_views"], errors="coerce").fillna(0)
@@ -38,7 +39,8 @@ fig = px.scatter(
     title="Wikipedia Articles by Continent and Year of Birth",
     labels={"continent": "Continent", "year_of_birth": "Year of Birth"},
     height=1000,  # Make the graph taller
-    size_max=100  # Increase max size of bubbles
+    size_max=100,  # Increase max size of bubbles
+    custom_data=["id"], 
 )
 
 fig.update_layout(
@@ -82,6 +84,4 @@ title=dict(
 )
 
 # Dash layout for the bubble plot
-categorical_bubble_plot_view = html.Div([
-    dcc.Graph(figure=fig)
-])
+categorical_bubble_plot_view = dcc.Graph(figure=fig, id="bubble-plot1")

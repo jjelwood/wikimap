@@ -1,6 +1,8 @@
-from dash import html, dcc, Input, Output
+from dash import html, dcc, Input, Output, State, ALL, ctx, callback_context
 import sql
 import json
+from article_summary import get_article_summary
+from country_summary import get_country_summary
 
 # Dropdown options
 dropdown_options = [
@@ -62,7 +64,7 @@ def update_podium_callback(app):
 
         if option == "Viewed":
             query = f"""
-            SELECT articles.name, articles.pageviews, places.country
+            SELECT articles.id, articles.name, articles.pageviews, places.country
             FROM articles
             JOIN places ON articles.place_id = places.id
             WHERE 1=1 {filter_query}
@@ -71,7 +73,7 @@ def update_podium_callback(app):
             """
         elif option == "Cited":
             query = f"""
-            SELECT articles.name, articles.citations, places.country
+            SELECT articles.id, articles.name, articles.citations, places.country
             FROM articles
             JOIN places ON articles.place_id = places.id
             WHERE 1=1 {filter_query}
@@ -80,7 +82,7 @@ def update_podium_callback(app):
             """
         elif option == "Linked To":
             query = f"""
-            SELECT a.name, COUNT(l.from_id) AS links, places.country 
+            SELECT a.id, a.name, COUNT(l.from_id) AS links, places.country 
             FROM articles a
             JOIN places ON a.place_id = places.id
             JOIN links l ON a.id = l.to_id
@@ -91,7 +93,7 @@ def update_podium_callback(app):
             """
         elif option == "Linked From":
             query = f"""
-            SELECT a.name, COUNT(l.to_id) AS links, places.country 
+            SELECT a.id, a.name, COUNT(l.to_id) AS links, places.country 
             FROM articles a
             JOIN places ON a.place_id = places.id
             JOIN links l ON a.id = l.from_id
@@ -102,7 +104,7 @@ def update_podium_callback(app):
             """
         elif option == "Reputable":
             query = f"""
-            SELECT articles.name, articles.reputability_score, places.country
+            SELECT articles.id, articles.name, articles.reputability_score, places.country
             FROM articles
             JOIN places ON articles.place_id = places.id
             WHERE 1=1 {filter_query}
@@ -118,7 +120,7 @@ def update_podium_callback(app):
             return [html.Div("No articles found", style={"text-align": "center", "margin": "20px"})]
 
         # Get the maximum value for proportional height calculation
-        max_value = max(float(article[1]) for article in articles) or 1
+        max_value = max(float(article[2]) for article in articles) or 1
         countries = [article[-1] for article in articles]
 
         # Generate podium content
@@ -126,18 +128,21 @@ def update_podium_callback(app):
         medals = ["🥇", "🥈", "🥉"]
         podiums = []
         for i, article in enumerate(articles):
-            value = float(article[1])
+            value = float(article[2])
             height_percentage = (value / max_value) * 100  # Height proportional to the value
             podiums.append(
                 html.Div([  # Each podium
                     html.Div(f"{medals[i]}", className="medal bg-primary"),
                     html.Img(src=f"assets/flags/{country_to_iso_code[countries[i]]}.svg", className="flag"),
                     html.Div(style={"height": f"{1.5 * height_percentage}px"}),  # Spacer
-                    html.Div(article[0],
+                    html.Div(article[1],
                              style={"text-align": "center", "font-weight": "bold", "margin-bottom": "10px"}),
                     html.Div(f"Value: {value:,}", style={"text-align": "center", "color": "gray"})
-                ], style={
+                ],
+                id={"type": "podium-article", "index": article[0]},
+                style={
                     "background-color": colors[i],
+                    "cursor": "grab",
                 }, className="podium-article")
             )
         
@@ -145,3 +150,18 @@ def update_podium_callback(app):
         podiums = [podiums[1], podiums[0], podiums[2]]
 
         return podiums
+    
+    @app.callback(
+        Output("secondary-content", "children", allow_duplicate=True),
+        [Input({"type": "podium-article", "index": ALL}, "n_clicks")],
+        [State({"type": "podium-article", "index": ALL}, "id")],
+        prevent_initial_call=True
+    )
+    def show_article_summary(n_clicks, ids):
+        ctx = callback_context
+        if not ctx.triggered or not any(n_clicks):
+            return None
+        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        article_id = eval(button_id)["index"]
+        print(article_id, n_clicks)
+        return [get_article_summary(article_id)]

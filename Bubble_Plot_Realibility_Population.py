@@ -45,7 +45,8 @@ fig = px.scatter(
     },
     # width=2200,  # Increase graph width significantly
     # height=2000,  # Maintain a large height for clarity
-    size_max=200  # Increase maximum bubble size further
+    size_max=200,  # Increase maximum bubble size further
+    custom_data=["country"]  # Include country names in the custom data
 )
 
 # Customize Layout for Better Appearance
@@ -82,6 +83,4 @@ fig.update_layout(
 )
 
 # Output the figure (integrate it into Dash)
-bubble_plot_realibility_population_content = html.Div([
-    dcc.Graph(figure=fig)
-])
+bubble_plot_realibility_population_content = dcc.Graph(figure=fig, id="bubble-plot2")
