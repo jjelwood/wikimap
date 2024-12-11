@@ -3,6 +3,7 @@ import plotly.express as px
 import pandas as pd
 import sql
 import article_summary
+from heatmap import view_heatmap_content
 
 sql.cursor.execute("SELECT a.id, a.name, a.pageviews, a.summary, p.latitude, p.longitude FROM articles a JOIN places p ON a.place_id = p.id WHERE p.latitude IS NOT NULL AND p.longitude IS NOT NULL and a.pageviews > 0")
 rows = sql.cursor.fetchall()
@@ -33,7 +34,8 @@ fig.update_layout(
 )
 
 content = html.Div([
-    dcc.Graph(figure=fig, id="map")
+    dcc.Graph(figure=fig, id="map"),
+    view_heatmap_content
 ])
 options = html.Div([
     dcc.Checklist(

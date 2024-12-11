@@ -10,14 +10,13 @@ sql.cursor.execute("""
     WHERE pageviews IS NOT NULL;
 """)
 rows = sql.cursor.fetchall()
-print("data: ", rows)
+
 # Create a DataFrame
 data = pd.DataFrame(rows, columns=["pageviews"])
-print(f"DataFrame head:\n{data.head()}")
 
 # Clean the data: Ensure pageviews is numeric
 data["pageviews"] = pd.to_numeric(data["pageviews"], errors="coerce").fillna(0)
-print(f"Cleaned data:\n{data}")  # Debugging
+
 # Generate the Plotly histogram
 fig = px.histogram(
     data,
