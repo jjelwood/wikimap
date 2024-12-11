@@ -79,9 +79,9 @@ def update_podium_callback(app):
             """
         elif option == "Linked":
             query = f"""
-            SELECT a.name, COUNT(l.from_id), p.country AS links
+            SELECT a.name, COUNT(l.from_id), places.country AS links
             FROM articles a
-            JOIN places p ON a.place_id = p.id
+            JOIN places ON a.place_id = places.id
             JOIN links l ON a.id = l.to_id
             WHERE 1=1 {filter_query}
             GROUP BY a.name
