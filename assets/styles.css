@@ -145,7 +145,7 @@ html, body {
 }
 
 #secondary-content {
-    position: absolute; /* Allows free movement on the page */
+    position: fixed;
     bottom: 10px;
     left: 10px;
     background-color: #ffffff;
@@ -162,18 +162,6 @@ html, body {
 
 #secondary-content * {
     user-select: none; /* Disable text highlighting */
-}
-
-/* Media queries for responsive design */
-@media (max-width: 768px) {
-    #split-content {
-        grid-template-columns: 1fr;
-    }
-
-    #menu {
-        flex-direction: column;
-        align-items: flex-start;
-    }
 }
 
 /* Podium Styling */
@@ -279,7 +267,7 @@ html, body {
     grid-template-columns: 1fr 1fr;  /* Two equal-sized columns */
     gap: 20px;
     box-sizing: border-box;  /* Include padding and border in the element's total width and height */
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 #graph-content > div, #graph-content > .dcc-Graph {
@@ -289,5 +277,11 @@ html, body {
 
 #categorical-bubble-plot {
     grid-row: span 2;
+}
+
+@media screen and (max-width: 1024px) {
+    #graph-content {
+        grid-template-columns: 1fr;  /* Single column layout */
+    }
 }
 

@@ -6,7 +6,8 @@ import json
 dropdown_options = [
     {"label": "Viewed", "value": "Viewed"},
     {"label": "Cited", "value": "Cited"},
-    {"label": "Linked", "value": "Linked"},
+    {"label": "Linked To", "value": "Linked To"},
+    {"label": "Linked From", "value": "Linked From"},
     {"label": "Reputable", "value": "Reputable"}
 ]
 
@@ -77,12 +78,23 @@ def update_podium_callback(app):
             ORDER BY articles.citations DESC
             LIMIT 3;
             """
-        elif option == "Linked":
+        elif option == "Linked To":
             query = f"""
             SELECT a.name, COUNT(l.from_id) AS links, places.country 
             FROM articles a
             JOIN places ON a.place_id = places.id
             JOIN links l ON a.id = l.to_id
+            WHERE 1=1 {filter_query}
+            GROUP BY a.name, places.country
+            ORDER BY links DESC
+            LIMIT 3;
+            """
+        elif option == "Linked From":
+            query = f"""
+            SELECT a.name, COUNT(l.to_id) AS links, places.country 
+            FROM articles a
+            JOIN places ON a.place_id = places.id
+            JOIN links l ON a.id = l.from_id
             WHERE 1=1 {filter_query}
             GROUP BY a.name, places.country
             ORDER BY links DESC

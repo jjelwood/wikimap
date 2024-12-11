@@ -2,11 +2,11 @@ from dash import Dash, html, dcc, callback, Output, Input
 import plotly.express as px
 import pandas as pd
 import sql
+import article_summary
 
-
-sql.cursor.execute("SELECT a.name, a.pageviews, a.summary, p.latitude, p.longitude FROM articles a JOIN places p ON a.place_id = p.id WHERE p.latitude IS NOT NULL AND p.longitude IS NOT NULL and a.pageviews > 0")
+sql.cursor.execute("SELECT a.id, a.name, a.pageviews, a.summary, p.latitude, p.longitude FROM articles a JOIN places p ON a.place_id = p.id WHERE p.latitude IS NOT NULL AND p.longitude IS NOT NULL and a.pageviews > 0")
 rows = sql.cursor.fetchall()
-data = pd.DataFrame(rows, columns=["name", "pageviews","summary", "lat", "lon"])
+data = pd.DataFrame(rows, columns=["id", "name", "pageviews","summary", "lat", "lon"])
 fig = px.scatter_map(
     data, 
     lat="lat", 
@@ -14,7 +14,7 @@ fig = px.scatter_map(
     hover_name="name", 
     zoom=1,
     size="pageviews",
-    custom_data=["name","pageviews","summary"]
+    custom_data=["id", "name","pageviews","summary"]
 )
 fig.update_traces(
     cluster=dict(
@@ -59,15 +59,8 @@ def on_click(click_data):
         return {"display": "none"}, None
     point=click_data["points"][0]
     custom_data=point.get("customdata")
-    name=custom_data[0]
-    pageviews=custom_data[1]
-    summary=custom_data[2]
-    info_content = html.Div([
-        html.H4(f"Article Name: {name}"),
-        html.P(f"Pageviews: {pageviews}"),
-        html.P(f"Summary:{summary}")
-    ])
-    return {"display": "block"}, info_content
+    id = custom_data[0]
+    return article_summary.get_summary(id)
 
 callbacks = [(Output('map', 'figure'), [Input('cluster-toggle', 'value')], update_map,False),
              ([Output('secondary-content','style'),Output('secondary-content','children')],[Input('map','clickData')],on_click,True)
