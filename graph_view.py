@@ -5,6 +5,9 @@ import sql
 from Catergorical_Bubble_Plot_view import categorical_bubble_plot_view
 from Bubble_Plot_Realibility_Population import bubble_plot_realibility_population_content
 from podium import podium_content
+import json
+from podium import podium_content, update_podium_callback
+from histogram import histogram_content
 
 
 query = """
@@ -23,6 +26,7 @@ fig2 = px.scatter(data, x="Pageviews", y="Citations", hover_name="Name", log_x=T
 content = html.Div([
     podium_content,
     html.Div(categorical_bubble_plot_view, id="categorical-bubble-plot"),
+    histogram_content,
     dcc.Graph(figure=fig1),
     dcc.Graph(figure=fig2),
     bubble_plot_realibility_population_content
