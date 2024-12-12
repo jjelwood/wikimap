@@ -4,6 +4,7 @@ import pandas as pd
 import sql
 import map_view
 import graph_view
+import home_view
 from podium import update_podium_callback
 
 app = Dash(__name__, suppress_callback_exceptions=True)
@@ -25,6 +26,10 @@ def generate_content(button_id):
         content = graph_view.content
         options = graph_view.options
         second_content = graph_view.second_content
+    elif button_id == 'home-button':
+        content = home_view.content
+        options = home_view.options
+        second_content = home_view.second_content
 
     return html.Div([
         # Options Menu
@@ -53,12 +58,14 @@ def generate_content(button_id):
 # Main callback to handle the page content
 @app.callback(
     Output('page-content', 'children'),
-    [Input('map-button', 'n_clicks'),
+    [
+     Input('home-button', 'n_clicks'),
+     Input('map-button', 'n_clicks'),
      Input('graphs-button', 'n_clicks')]
 )
-def display_page(map_clicks, graphs_click):
+def display_page(home_clicks, map_clicks, graphs_click):
     if not callback_context.triggered:
-        button_id = 'map-button'  # Default to 'map-button'
+        button_id = 'home-button'  # Default to 'map-button'
     else:
         button_id = callback_context.triggered[0]['prop_id'].split('.')[0]
 
@@ -99,6 +106,7 @@ app.layout = html.Div([
 
     # Menu bar
     html.Div([
+        html.Button("Home", id="home-button", n_clicks=0, className="menu-button"),
         html.Button("Map", id="map-button", n_clicks=0, className="menu-button"),
         html.Button("Graphs", id="graphs-button", n_clicks=0, className="menu-button"),
     ], id="menu"),

@@ -118,6 +118,19 @@ html, body {
     background-color: #f1f1f1;
 }
 
+#home-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+#home-content > p, #home-content > h2 {
+    text-align: center;
+    width: 600px;
+}
+
 /* Section content */
 #section-content {
     background-color: #f9fafb; /* Softer white */
@@ -442,4 +455,8 @@ html, body {
     margin-right: 15px;
     margin-left: auto;
     border: 1px solid #333;
+}
+
+#bubble-plot2 {
+    width: 100%;
 }
