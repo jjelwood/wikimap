@@ -48,18 +48,36 @@ content = html.Div([
 options = html.Div([
     dcc.Checklist(
         id='cluster-toggle',
-        options=[{'label': 'Enable Clusters', 'value': 'enabled'}],
+        options=[
+            {'label': 'Enable Clusters', 'value': 'clusters'},
+        ],
         value=[]
     ),
+    dcc.Checklist(
+        id='heatmap-toggle',
+        options=[
+            {'label': 'Enable Heatmap', 'value': 'heatmap'}
+        ],
+        value=[]
+    )
 ])
 second_content = None
 
-def update_map(cluster_toggle):
-    if 'enabled' in cluster_toggle:
+def update_map(options_toggle):
+    if 'clusters' in options_toggle:
         fig.update_traces(cluster=dict(enabled=True,maxzoom=10,step=50))
     else:
         fig.update_traces(cluster=dict(enabled=False))
     return fig
+
+def update_heatmap(options_toggle):
+    if 'heatmap' in options_toggle:
+        article_map_style = {"display": "none"}
+        heat_map_style = {"display": "block"}
+    else:
+        article_map_style = {"display": "block"}
+        heat_map_style = {"display": "none"}
+    return article_map_style, heat_map_style
 
 # On_click event to show information related to articles
 def on_click(click_data):
@@ -101,6 +119,15 @@ callbacks = [
         Output('map', 'figure'),
         [Input('cluster-toggle', 'value')],
         update_map,
+        False
+    ),
+    (
+        [
+            Output('map', 'style'),
+            Output('heatmap', 'style')
+        ],
+        [Input('heatmap-toggle', 'value')],
+        update_heatmap,
         False
     ),
     (
