@@ -97,7 +97,7 @@ def generate_graph_elements(article_name, linked_articles):
                     "text-halign": "center",
                     "text-valign": "center",
                     "background-color": "#0074D9",
-                    "color": "white",
+                    "color": "black",
                     "font-size": "12px"
                 }
             },
@@ -163,7 +163,14 @@ def on_click(click_data):
     if linked_articles:
         cyto_graph=generate_graph_elements(article_name,linked_articles)
     else:
-        cyto_graph = None
+        cyto_graph = html.Div("No links found",
+                              style={
+        "text-align": "center",
+        "margin-top": "20px",
+        "color": "gray",
+        "font-size": "16px",
+        "font-style": "italic"
+    })
 
     # Create the graph
     fig = go.Figure()
