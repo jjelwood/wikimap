@@ -50,14 +50,23 @@ content = html.Div([
 options = html.Div([
     dcc.Checklist(
         id='cluster-toggle',
-        options=[{'label': 'Enable Clusters', 'value': 'enabled'}],
+        options=[
+            {'label': 'Enable Clusters', 'value': 'clusters'},
+        ],
         value=[]
     ),
+    dcc.Checklist(
+        id='heatmap-toggle',
+        options=[
+            {'label': 'Enable Heatmap', 'value': 'heatmap'}
+        ],
+        value=[]
+    )
 ])
 second_content = None
 
-def update_map(cluster_toggle):
-    if 'enabled' in cluster_toggle:
+def update_map(options_toggle):
+    if 'clusters' in options_toggle:
         fig.update_traces(cluster=dict(enabled=True,maxzoom=10,step=50))
     else:
         fig.update_traces(cluster=dict(enabled=False))
@@ -116,6 +125,15 @@ def generate_graph_elements(article_name, linked_articles):
     )
     return cytoscape_graph
 
+def update_heatmap(options_toggle):
+    if 'heatmap' in options_toggle:
+        article_map_style = {"display": "none"}
+        heat_map_style = {"display": "block"}
+    else:
+        article_map_style = {"display": "block"}
+        heat_map_style = {"display": "none"}
+    return article_map_style, heat_map_style
+
 # On_click event to show information related to articles
 def on_click(click_data):
     if click_data is None:
@@ -135,7 +153,8 @@ def on_click(click_data):
 
     pageviews_dict = json.loads(result[0])  # Parse JSON string
     monthly_pageviews = list(pageviews_dict.values())
-    months = [f"Month {i + 1}" for i in range(len(monthly_pageviews))]
+    month_names = {"01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun", "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"}
+    months = [f"{month_names[date[4:6]]} {date[:4]}"  for date in pageviews_dict.keys()]
 
     # Links network creation
     sql.cursor.execute("""
@@ -153,7 +172,8 @@ def on_click(click_data):
         title="Monthly Pageviews",
         xaxis_title="Month",
         yaxis_title="Pageviews",
-        margin={"l": 40, "r": 40, "t": 40, "b": 40}
+        margin={"l": 40, "r": 40, "t": 40, "b": 40},
+        xaxis=dict(tickangle=-45)
     )
     # Return Dash components
     summary_component = article_summary.get_article_summary(article_id)
@@ -165,6 +185,15 @@ callbacks = [
         Output('map', 'figure'),
         [Input('cluster-toggle', 'value')],
         update_map,
+        False
+    ),
+    (
+        [
+            Output('map', 'style'),
+            Output('heatmap', 'style')
+        ],
+        [Input('heatmap-toggle', 'value')],
+        update_heatmap,
         False
     ),
     (

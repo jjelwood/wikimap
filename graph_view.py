@@ -26,11 +26,26 @@ fig2 = px.scatter(data, x="Pageviews", y="Citations", hover_name="Name", log_x=T
 country_name_to_iso_code = json.load(open("iso_codes.json"))
 
 content = html.Div([
-    podium_content,
-    html.Div(categorical_bubble_plot_view, id="categorical-bubble-plot"),
-    dcc.Graph(figure=fig1, id="scatter-plot1"),
-    dcc.Graph(figure=fig2, id="scatter-plot2"),
-    bubble_plot_realibility_population_content
+    html.Div([
+        podium_content,
+        html.P("See the top 3 articles across different metrics, try it out!")
+    ], className="caption-container"),
+    html.Div([
+        categorical_bubble_plot_view,
+        html.P("See what most popular articles are from each century from each continent! In this plot, the size of a bubble represents the average number of pageviews an article gets a month, and the color represents the continent the article is from.")
+    ], className="caption-container", id="categorical-bubble-plot-container"),
+    html.Div([
+        dcc.Graph(figure=fig1, id="scatter-plot1"),
+        html.P("See the relationship between pageviews and incoming links.")
+    ], className="caption-container"),
+    html.Div([
+        dcc.Graph(figure=fig2, id="scatter-plot2"),
+        html.P("See the relationship between the average number of pageviews an article gets and the number of citations it has.")
+    ], className="caption-container"),
+    html.Div([
+        bubble_plot_realibility_population_content,
+        html.P("Do countries with higher populations have articles with higher reputability scores? In this plot the size of a bubble represents the total number of pageviews articles in a country get a month, the color represents the country, and the x-axis represents the population of the country.")
+    ], className="caption-container", id="bubble-plot-container")
 ], id="graph-content")
 options = None
 second_content = None

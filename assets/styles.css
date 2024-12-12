@@ -265,22 +265,33 @@ html, body {
     /* overflow: hidden; */
 }
 
-#categorical-bubble-plot {
-    grid-row: span 3;
+#categorical-bubble-plot-container {
+    grid-row: span 3 !important;
     height: 1568px !important;
 }
 
-#graph-content > div, #graph-content > .dcc-Graph {
+.caption-container {
     height: 500px;  /* Set a fixed height for all grid items */
     width: calc(100%-10px);
     border: 2px solid #e0e0e0;
     border-radius: 8px; 
     padding: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-#bubble-plot2 {
+.caption-container > p {
+    text-align: center;
+}
+
+#bubble-plot-container {
     grid-column: span 2;
+}
+
+#bubble-plot-2 {
+    width: 100%;
 }
 
 @media screen and (max-width: 1024px) {
