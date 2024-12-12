@@ -17,8 +17,8 @@ def generate_graph_elements(article_name, linked_articles):
     cytoscape_graph = cyto.Cytoscape(
         id='cytoscape-graph',
         elements=elements,
-        style={'width': '100%', 'height': '200px'},
-        layout={'name': 'cose'},
+        style={'width': '100%', 'height': '150px', 'margin-top': '10px'},
+        layout={'name': 'circle', 'avoidOverlap': True, 'padding': 10},
         stylesheet=[
             {
                 "selector": "node",
@@ -26,29 +26,37 @@ def generate_graph_elements(article_name, linked_articles):
                     "content": "data(label)",
                     "text-halign": "center",
                     "text-valign": "center",
-                    "background-color": "#0074D9",
-                    "color": "black",
-                    "font-size": "12px"
+                    "background-color": "#1E90FF",  # A lighter blue
+                    # "color": "white",
+                    "font-size": "10px",
+                    "text-valign": "top",  # Move text above the node
+                    "text-margin-y": -5,  # Add a margin above the node
+                    "border-width": 2,
+                    "border-color": "#0074D9",
+                    "width": 20,
+                    "height": 20
                 }
             },
             {
                 "selector": "edge",
                 "style": {
-                    "width": 2,
-                    "line-color": "#888",
-                    "target-arrow-color": "#888",
+                    "width": 1.5,
+                    "line-color": "#A9A9A9",  # Light gray to reduce visual noise
+                    "target-arrow-color": "#A9A9A9",
                     "target-arrow-shape": "triangle",
-                    "arrow-scale": 1.5,
-                    "curve-style": "bezier"
+                    "arrow-scale": 1.2,
+                    "curve-style": "straight"  # Simpler and less distracting
                 }
             },
             {
                 "selector": ".central",
                 "style": {
-                    "background-color": "#FF4136",
-                    "font-size": "14px",
-                    "width": 30,
-                    "height": 30
+                    "background-color": "#FF851B",  # Orange to match reputability score styling
+                    "font-size": "12px",
+                    "width": 25,
+                    "height": 25,
+                    "border-width": 3,
+                    "border-color": "#FF4136"  # Red border for emphasis
                 }
             }
         ]
