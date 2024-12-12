@@ -6,7 +6,6 @@ import article_summary
 from heatmap import view_heatmap_content
 import plotly.graph_objs as go
 import json
-import dash_cytoscape as cyto
 
 sql.cursor.execute("SELECT a.id, a.name, a.pageviews, a.summary, p.latitude, p.longitude FROM articles a JOIN places p ON a.place_id = p.id WHERE p.latitude IS NOT NULL AND p.longitude IS NOT NULL and a.pageviews > 0")
 rows = sql.cursor.fetchall()
@@ -45,7 +44,7 @@ content = html.Div([
 
     # Heatmap content can be added elsewhere if still needed
     view_heatmap_content,
-    html.Div(id="cytoscape-container", style={"margin-top": "20px"})
+    
 ])
 options = html.Div([
     dcc.Checklist(
@@ -71,59 +70,6 @@ def update_map(options_toggle):
     else:
         fig.update_traces(cluster=dict(enabled=False))
     return fig
-def generate_graph_elements(article_name, linked_articles):
-
-    elements = []
-
-    # Add the central article node
-    elements.append({"data": {"id": article_name, "label": article_name}, "classes": "central"})
-
-    # Add nodes and edges for linked articles
-    for row in linked_articles:
-        to_name = row[0]
-        elements.append({"data": {"id": to_name, "label": to_name}})
-        elements.append({"data": {"source": article_name, "target": to_name}})
-    
-    cytoscape_graph = cyto.Cytoscape(
-        id='cytoscape-graph',
-        elements=elements,
-        style={'width': '100%', 'height': '500px'},
-        layout={'name': 'cose'},
-        stylesheet=[
-            {
-                "selector": "node",
-                "style": {
-                    "content": "data(label)",
-                    "text-halign": "center",
-                    "text-valign": "center",
-                    "background-color": "#0074D9",
-                    "color": "black",
-                    "font-size": "12px"
-                }
-            },
-            {
-                "selector": "edge",
-                "style": {
-                    "width": 2,
-                    "line-color": "#888",
-                    "target-arrow-color": "#888",
-                    "target-arrow-shape": "triangle",
-                    "arrow-scale": 1.5,
-                    "curve-style": "bezier"
-                }
-            },
-            {
-                "selector": ".central",
-                "style": {
-                    "background-color": "#FF4136",
-                    "font-size": "14px",
-                    "width": 30,
-                    "height": 30
-                }
-            }
-        ]
-    )
-    return cytoscape_graph
 
 def update_heatmap(options_toggle):
     if 'heatmap' in options_toggle:
@@ -142,7 +88,6 @@ def on_click(click_data):
     point = click_data["points"][0]
     custom_data = point.get("customdata")
     article_id = custom_data[0]
-    article_name = custom_data[1]
 
     # Query the monthly pageviews
     sql.cursor.execute("SELECT monthly_pageviews FROM articles WHERE id = %s", (article_id,))
@@ -155,22 +100,6 @@ def on_click(click_data):
     monthly_pageviews = list(pageviews_dict.values())
     month_names = {"01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun", "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"}
     months = [f"{month_names[date[4:6]]} {date[:4]}"  for date in pageviews_dict.keys()]
-
-    # Links network creation
-    sql.cursor.execute("""
-        SELECT to_name FROM links WHERE from_name = %s""",(article_name,))
-    linked_articles = sql.cursor.fetchall()
-    if linked_articles:
-        cyto_graph=generate_graph_elements(article_name,linked_articles)
-    else:
-        cyto_graph = html.Div("No links found",
-                              style={
-        "text-align": "center",
-        "margin-top": "20px",
-        "color": "gray",
-        "font-size": "16px",
-        "font-style": "italic"
-    })
 
     # Create the graph
     fig = go.Figure()
@@ -185,7 +114,7 @@ def on_click(click_data):
     # Return Dash components
     summary_component = article_summary.get_article_summary(article_id)
 
-    return {"display": "block"}, summary_component, html.Div([dcc.Graph(figure=fig)]),cyto_graph
+    return {"display": "block"}, summary_component, html.Div([dcc.Graph(figure=fig)])
 
 callbacks = [
     (
@@ -207,8 +136,7 @@ callbacks = [
         [
             Output('secondary-content-container', 'style', allow_duplicate=True),
             Output('secondary-content', 'children', allow_duplicate=True),
-            Output('graph-container', 'children'),
-            Output('cytoscape-container','children')
+            Output('graph-container', 'children')
         ],
         [Input('map', 'clickData')],
         on_click,
