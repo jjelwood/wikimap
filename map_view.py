@@ -39,12 +39,12 @@ content = html.Div([
     # Map
     dcc.Graph(figure=fig, id="map"),
 
+    # Heatmap content can be added elsewhere if still needed
+    view_heatmap_content,
+
     # Graph container for monthly pageviews (immediately below the map)
     html.Div(id="graph-container"),
 
-    # Heatmap content can be added elsewhere if still needed
-    view_heatmap_content,
-    
 ])
 options = html.Div([
     dcc.Checklist(
