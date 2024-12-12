@@ -97,7 +97,8 @@ def on_click(click_data):
 
     pageviews_dict = json.loads(result[0])  # Parse JSON string
     monthly_pageviews = list(pageviews_dict.values())
-    months = [f"Month {i + 1}" for i in range(len(monthly_pageviews))]
+    month_names = {"01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun", "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"}
+    months = [f"{month_names[date[4:6]]} {date[:4]}"  for date in pageviews_dict.keys()]
 
     # Create the graph
     fig = go.Figure()
@@ -106,7 +107,8 @@ def on_click(click_data):
         title="Monthly Pageviews",
         xaxis_title="Month",
         yaxis_title="Pageviews",
-        margin={"l": 40, "r": 40, "t": 40, "b": 40}
+        margin={"l": 40, "r": 40, "t": 40, "b": 40},
+        xaxis=dict(tickangle=-45)
     )
 
     # Return Dash components
